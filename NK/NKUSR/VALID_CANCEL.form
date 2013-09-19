@@ -1,0 +1,18 @@
+_STRT_NEW_FORM_ 1 VALID_CANCEL 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:VALID_CANCEL
+/******************************************************************
+Reserved Rule. Runs before sending out order cancel request.
+******************************************************************/
+
+FTStr ftDefDest;
+
+Get_Default_Listed_Dest(ftDefDest);
+Set_Send_Order_Dest(ftDefDest.str());
+
+FTStr sTrdAcct;
+sTrdAcct = GlobalStr("TRD_ACCT");
+Set_Send_Order_Acct(sTrdAcct.str());
+
+return true;
+
+
+_END_FORM_ *****************************************

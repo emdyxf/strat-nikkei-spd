@@ -1,0 +1,39 @@
+_STRT_NEW_FORM_ 1 NKSP_SET_STOP 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:NKSP_SET_STOP
+/***************************************************
+NKSP Strat Rule. Set all running strategy to "Cancelled" when all client orders are cancelled
+**************************************************/
+
+if(!strcmp(PORTFOLIO, FixedMWPort()))
+return true;
+
+FTStr szMsg, szStatus;
+double dblTotalQty=0.0;
+int iTotalQty=0;
+
+if((strstr(PORTFOLIO, FLEX_OMRULE_NKSPD)) && (BUY_LEAVES==0 && SELL_LEAVES==0))
+{
+	Get_Column_Value_Else("NKSP_TOTALQTY",dblTotalQty,0);
+	iTotalQty = (int)dblTotalQty;
+	
+	Get_Column_Str("NKSP_STATUS", szStatus.str());
+	
+	if (!strcmp(szStatus.str(), STRAT_STATUS_CXLD))
+	{
+		return true;
+	}
+
+	if (iTotalQty>0 && abs(EXEC_SHARES) != iTotalQty)
+	{
+	
+        szMsg="Strat [";szMsg+=PORTFOLIO;szMsg+="]- NO Leaves with Execs ["; szMsg+=EXEC_SHARES;
+		szMsg+="] less than TotalQty [";szMsg+=iTotalQty;szMsg+="] : Strat Cancelled!";
+        Pop_Msg(szMsg);
+	
+        Set_Column_Str_Save("NKSP_STATUS", STRAT_STATUS_CXLD);
+	}
+}
+
+return true;
+
+
+_END_FORM_ *****************************************

@@ -1,0 +1,25 @@
+_STRT_NEW_FORM_ 1 SET_CTL_VARS 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:SET_CTL_VARS
+/* This section is for setting Toolbar tooltips */
+TLB_Set_Property("TlbBtnCreateStrategy", "tooltip","Create a new strategy portfolio");
+TLB_Set_Property("TlbBtnEditStrategy", "tooltip","Edit certain parameters of one selected strategy portfolio");
+
+TLB_Set_Property("TlbBtnStart", "tooltip","Start one or more strategy portfolios");
+TLB_Set_Property("TlbBtnStopOne", "tooltip","Cancel open strategy orders on one portfolio at a time");
+TLB_Set_Property("TlbBtnStopAll", "tooltip","Cancel all open strategy orders");
+
+TLB_Set_Property("tlbBtnLadder", "tooltip","Invokes Ladder window");
+
+TLB_Set_Property("TlbHomeBtn", "tooltip","Navigate to Strategy Columns");
+TLB_Set_Property("tlbBtnMarket", "tooltip","Navigate to Market Data Columns");
+TLB_Set_Property("tlbBtnPosition", "tooltip","Navigate to Postion Columns");
+TLB_Set_Property("tlbBtnParams", "tooltip","Navigate to Strategy Parameters Columns");
+
+TLB_Set_Property("TlbBtnClosePos", "tooltip","Close out positions on one portfolio at a time");
+TLB_Set_Property("TlbBtnCxlOrds", "tooltip","Cancel the close position orders");
+
+TLB_Set_Property("tlbBtnFilter", "tooltip","Filters/Unfilters Spreads symbols from the view");
+
+return true;
+
+
+_END_FORM_ *****************************************

@@ -1,0 +1,11 @@
+_STRT_NEW_FORM_ 1 SET_CHANGE 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:SET_CHANGE
+if(CLOSE <= 0.001)
+	return 1;
+
+Set_Column_Value("CHANGE", LAST - CLOSE);
+Set_Column_Value("PCT_CHANGE", (LAST - CLOSE)/CLOSE);
+
+return 1;
+
+
+_END_FORM_ *****************************************

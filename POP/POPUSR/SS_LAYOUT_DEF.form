@@ -1,0 +1,261 @@
+_STRT_NEW_FORM_ 1 SS_LAYOUT_DEF 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:SS_LAYOUT_DEF
+/******************************************************************
+SS Rule. Configure Outright Ladder Layout
+******************************************************************/
+
+FTStr msg("debug:");
+
+char szParam[32] = "", szParam1[32] ="";
+Get_param_str(szParam,0);
+Set_param_str("",0);
+
+if(!Is_Auto_Enabled())
+{
+	Enable_Auto_Trade();
+}
+
+// The ORD_QTY param is to set the order quantity in ss_spbtn_ordQty spin widget. 
+// It accumulates the numbers.
+if(!strcmp(szParam,"ORD_QTY"))
+{
+	Get_param_str(szParam1,1);
+	Set_param_str("",1);
+	
+	SS_TLB_Set_Property("ss_spbtn_rplQty", "value",szParam1);
+	SS_TLB_Set_Property("ss_spbtn_ordQty", "value",szParam1);
+}
+// The ORD_TYPE param sets the order type (MKT/LIM/IOC) in the ss_lbl_ordType label. 
+// This value is picked up for further processing.
+else if(!strcmp(szParam,"ORD_TYPE"))
+{
+	Get_param_str(szParam1,1);
+	Set_param_str("",1);
+	SS_TLB_Set_Property("ss_lbl_ordType", "label",szParam1);
+	
+	char szColor[32] = "";
+	if(!strcmp(szParam1,"MKT"))		{sprintf(szColor,"#B70E0E");}
+	else if(!strcmp(szParam1,"LIM")){sprintf(szColor,"#097F0E");}
+	else if(!strcmp(szParam1,"IOC")){sprintf(szColor,"#B57C02");}
+	else							{return 1;}	
+	
+	SS_TLB_Set_Property("ss_lbl_ordType", "foreground",szColor);	
+}
+// Cancel all orders; handy when price moves suddenly
+else if(!strcmp(szParam,"CXL_ALL"))
+{
+	FT_DEPTH_INFO dInfo;
+	int iSelLevels = SS_Get_Selected_Levels(dInfo);
+	//if(iSelLevels > 0) 
+	{
+		
+	}
+	//else
+	{
+		for(int i = 0; i < 3; i++)
+		{
+			FT_ORDER_INFO oinfo;
+			int num_orders = 0;
+			
+			switch(i)
+			{
+				case 0 : num_orders = Get_Buy_Active_Orders(oinfo); break;
+				case 1 : num_orders = Get_Sell_Active_Orders(oinfo);break;
+				//case 2 : num_orders = Get_Ssh_Active_Orders(oinfo); break;
+				case 3 : num_orders = Get_Ssh_Active_Orders(oinfo);
+			}
+
+			for (int j = 0; j < num_orders; j++)
+			{
+			
+				msg="CXL_ALL: i=";msg+=i;msg+=" j=";msg+=j;msg+=" num_orders=";msg+=num_orders;
+				Pop_Msg1(msg);
+				msg="oinfo[";msg+=i;msg+="] OrderID=";msg+=oinfo.OrderId(j);msg+=" Acked?=[";msg+=oinfo.IsAcked(i);msg+="]";
+				msg+=" Dest=";msg+=oinfo.Dest(i);
+				Pop_Msg1(msg);
+			
+				if(!oinfo.Is_Unsent(i) && oinfo.IsAcked(i))	{Auto_Cancel_Order(j, oinfo, NO_CONFIRM);}
+				else if(oinfo.Is_Unsent(i)) {Pop_Msg_Color("CXL:Is-Unsent",0,"yellow","black");}
+				else if(!oinfo.IsAcked(i)) {Pop_Msg_Color("CXL:Un-Acked",0,"yellow","black");}
+				else {Pop_Msg_Color("CXL:Un-Handled",0,"yellow","black");}
+			} 	
+		}
+	}
+}
+// Mouse click operations on the LEVEL 2 window of the SS screen
+else
+{
+	char szColumn[32] = "";
+	int iSelectedColumn = SS_Get_Selected_Column(szColumn);
+	
+	SS_MOUSE_CLICK eClick = enOtherClick;
+	if(!strcmp(szParam,"SINGLE"))
+		eClick = enSingleClick;
+	else if(!strcmp(szParam,"DOUBLE"))
+		eClick = enDoubleClick;
+	else if(!strcmp(szParam,"RIGHT"))
+		eClick = enRightClick;
+	else if(!strcmp(szParam,"MIDDLE"))
+		eClick = enMiddleClick;
+	else if(!strcmp(szParam,"SHIFT_LEFT"))
+		eClick = enShiftLeftClick;
+	else if(!strcmp(szParam,"CTRL_LEFT"))
+		eClick = enCtrlLeftClick;
+	else if(!strcmp(szParam,"RELEASE"))
+		eClick = enButtonRelease;
+		
+	std::string sParam = "", sParam1 = "";
+	
+	SS_COLUMN_NUMBER eColumn = (SS_COLUMN_NUMBER)(iSelectedColumn);
+	
+	switch(eColumn) // From Left-To-Right
+	{
+		case enColumn1:
+		{	
+			// Single Click : Increase Qty
+			// Double Click :
+			// Right Click :  Decrease Qty
+			// Mid Click :
+			// Shift Left Click: 
+			// Ctrl Left Click: 
+			switch(eClick)
+			{
+				case enSingleClick:	{sParam = "QTY_BUY"; sParam1 = "INCREASE"; break;}
+				case enDoubleClick:	{break;}
+				case enRightClick:	{sParam = "QTY_BUY"; sParam1 = "DECREASE"; break;}
+				case enMiddleClick:	{break;}
+				case enShiftLeftClick: {break;}
+				case enCtrlLeftClick: {sParam = "MULT_SELECT";break;}
+				case enButtonRelease: {break;}
+				case enOtherClick:
+				default:			{Pop_Msg_Color("Unhandled Click!",0,"yellow","black");break;}
+			}
+			break;
+		}	
+		case enColumn2:
+		{	
+			// Single Click : Place Buy Order
+			// Double Click :
+			// Right Click :  Cancel
+			// Mid Click :
+			// Shift Left Click: 
+			// Ctrl Left Click: 
+			switch(eClick)
+			{
+				case enSingleClick:	{sParam = "SEND_ORD"; sParam1 = "BUY"; break;}
+				case enDoubleClick:	{break;}
+				case enRightClick:	{sParam = "CXL";break;}
+				case enMiddleClick:	{break;}
+				case enShiftLeftClick: {break;}
+				case enCtrlLeftClick: {sParam = "MULT_SELECT";break;}
+				case enButtonRelease: {break;}
+				case enOtherClick:
+				default:			{Pop_Msg_Color("Unhandled Click!",0,"yellow","black");break;}
+			}
+			break;
+		}
+		case enColumn3:
+		{	
+			// Single Click : Replace
+			// Double Click :
+			// Right Click :  Select and Obtain Price
+			// Mid Click :    
+			// Shift Left Click: 
+			// Ctrl Left Click: 
+			switch(eClick)
+			{
+				case enSingleClick:	{sParam = "RPL";break;}
+				case enDoubleClick:	{sParam = "UNSELECT";break;}
+				case enRightClick:	{sParam = "RPL_PARAMS";break;}
+				case enMiddleClick:	{break;}
+				case enShiftLeftClick: {break;}
+				case enCtrlLeftClick: {sParam = "MULT_SELECT";break;}
+				case enButtonRelease: {break;}
+				case enOtherClick:
+				default:			{Pop_Msg_Color("Unhandled Click!",0,"yellow","black");break;}
+			}
+			break;
+		}
+		case enColumn4:
+		{	
+			// Single Click : Place Sell Order
+			// Double Click :
+			// Right Click :  Cancel
+			// Mid Click :
+			// Shift Left Click: 
+			// Ctrl Left Click: 
+			switch(eClick)
+			{
+				case enSingleClick:	{sParam = "SEND_ORD"; sParam1 = "SELL"; break;}
+				case enDoubleClick:	{break;}
+				case enRightClick:	{sParam = "CXL"; break;}
+				case enMiddleClick:	{break;}
+				case enShiftLeftClick: {break;}
+				case enCtrlLeftClick: {sParam = "MULT_SELECT";break;}
+				case enButtonRelease: {break;}
+				case enOtherClick:
+				default:			{Pop_Msg_Color("Unhandled Click!",0,"yellow","black");break;}
+			}
+			break;
+		}
+		case enColumn5:
+		{	
+			// Single Click : Increase Qty
+			// Double Click :
+			// Right Click :  Decrease Qty
+			// Mid Click :
+			// Shift Left Click: 
+			// Ctrl Left Click: 			
+			switch(eClick)
+			{
+				case enSingleClick:	{sParam = "QTY_SELL"; sParam1 = "INCREASE"; break;}
+				case enDoubleClick:	{break;}
+				case enRightClick:	{sParam = "QTY_SELL"; sParam1 = "DECREASE"; break;}
+				case enMiddleClick:	{break;}
+				case enShiftLeftClick: {break;}
+				case enCtrlLeftClick: {sParam = "MULT_SELECT";break;}
+				case enButtonRelease: {break;}
+				case enOtherClick:
+				default:			{Pop_Msg_Color("Unhandled Click!",0,"yellow","black");break;}
+			}			
+			break;
+		}
+		case enColumnOinfo:
+		{
+			switch(eClick)
+			{
+				case enSingleClick:	{SS_Run_Script("LEVEL2","select"); break;}
+				case enDoubleClick:	{break;}
+				case enRightClick:	{sParam = "CXL"; break;}
+				case enMiddleClick:	{break;}
+				case enShiftLeftClick: {break;}
+				case enCtrlLeftClick: {sParam = "MULT_SELECT";break;}
+				case enButtonRelease: {Pop_Msg_Color("Released: Replace!",0,"yellow","black"); break;}
+				case enOtherClick:
+				default:			{Pop_Msg_Color("Unhandled Click!",0,"yellow","black");break;}
+			}
+			break;
+		}
+		case enInvalidColumn:
+		{	
+			Pop_Msg_Color("Invalid Column!",0,"yellow","black");
+			return 1;
+		}
+		default:
+		{	
+			Pop_Msg_Color("Uniidentified Column!",0,"yellow","black");
+			return 1;
+		}	
+	}
+	strncpy(szParam,sParam.c_str(),sizeof(szParam));
+	strncpy(szParam1,sParam1.c_str(),sizeof(szParam1));
+	
+	Set_param_str(szParam,0);
+	Set_param_str(szParam1,1);
+	RunRule(SS_LAYOUT_DEF_HANDLE_CLICK);
+	Set_param_str("",0);
+	Set_param_str("",1);
+}
+return 1;
+
+
+_END_FORM_ *****************************************

@@ -1,0 +1,463 @@
+_STRT_NEW_FORM_ 1 NK_SPD_DLG 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:NK_SPD_DLG
+/***************************************************
+NK_SPD Strat Rule. Manage NK_SPD strategy dialog
+**************************************************/
+
+char szParam[32] = "";
+Get_param_str(szParam, 0);
+
+FTStr strRuleName="[NK_SPD_DLG]: ";
+FTStr strRuleLog="";
+
+/*
+ * Expected Parameters
+ * LOAD         : [L] When the Dialog is loaded
+ * QSIDE		: [Q] Update sides when Quote Side is changed
+ * HSIDE		: [H] Update sides when Hedge Side is changed
+ * REFRESH      : [R] Refresh Benchmarks
+ * UP			: [U] Increase Spread Point
+ * DOWN			: [D] Decrease Spread Point
+ * INIT			: [I] Initialize dialogbox
+ * CONFIRM      : [C] Build Strategy upon clicking "OK"
+ * cancel       : [c] Close dialog upon clicking "CANCEL"
+*/
+
+if(szParam[0] == 'L')// LOAD
+{
+	FTStr szTemp;
+	if(IsStratInEditMode)
+	{
+		static ColumnInfo clNkspLeg("NKSP_LEG"), clStratName("STRAT_NAME"), clStratPort("NKSP_PORT"), clStratId("NKSP_STRATID");
+		static ColumnInfo clNkspSide("NKSP_SIDE"), clBenchmark("NKSP_BENCH"), clStratMode("NKSP_MODE");
+		static ColumnInfo clNkspStatus("NKSP_STATUS"), clNkspBench("NKSP_BENCH"), clOrdLot("NKSP_ORDQTY"), clTotalLot("NKSP_TOTALQTY"), clPayUpTick("NKSP_PAYUPTICK");
+				
+		DlgSetProperty(NULL,"title","NIKKEI SPREAD : EDIT");
+		
+		FlexAppRules::RowInfoArray selRows;
+		int iSelectedRows = MainGetSelectedRows(selRows);
+		if(iSelectedRows != 2) // Should never happen - checked in SHOW_DIALOG
+		{
+			MsgBox("PARAMETER EDIT", "Edit parameters error: Please select two rows!", 'E');
+			DlgRunCommand("CLOSE");
+			IsStratInEditMode = false;
+			return true;
+		}
+		
+		FlexAppRules::RowInfo QuoteRow, HedgeRow;
+		int	nTemp;
+		double dTemp;
+		
+		selRows[0].GetCellValue(clNkspLeg, szTemp);
+		if(!strcmp(szTemp.str(), LEG_QUOTE))
+		{
+			QuoteRow = selRows[0];
+			HedgeRow = selRows[1];
+		}
+		else
+		{
+			QuoteRow = selRows[1];
+			HedgeRow = selRows[0];
+		}
+		
+		szTemp = QuoteRow.GetSymbol();
+		DlgSetControlValue("symQuote", szTemp.str());
+		
+		szTemp = HedgeRow.GetSymbol();
+		DlgSetControlValue("symHedge", szTemp.str());
+		
+		QuoteRow.GetCellValue(clNkspSide, szTemp);
+		if(strstr(szTemp.str(),"SELL"))
+		{
+			DlgSetControlValue("optQuoteSide","SELL");
+			DlgSetControlValue("optHedgeSide","BUY");
+			DlgSetProperty("btnOK", "label", "SELL");
+		}
+		else if(strstr(szTemp.str(),"BUY"))
+		{
+			DlgSetControlValue("optQuoteSide","BUY");
+			DlgSetControlValue("optHedgeSide","SELL");
+			DlgSetProperty("btnOK", "label", "BUY");
+		}
+		else
+		{
+			return false;
+		}
+		
+		QuoteRow.GetCellValue(clStratName,szTemp);
+		DlgSetControlValue("StratName", szTemp.str());
+		
+		QuoteRow.GetCellValue(clStratMode,szTemp);
+		DlgSetControlValue("optMode", szTemp.str());
+
+		DlgDisableControl("symQuote");
+		DlgDisableControl("symHedge");
+		DlgDisableControl("optQuoteSide");
+		DlgDisableControl("optHedgeSide");
+		DlgDisableControl("StratName");
+		DlgDisableControl("optMode");
+		
+		int nOrdLot = (int) QuoteRow.GetCellValue(clOrdLot, 0.0);
+		szTemp = nOrdLot;
+		DlgSetControlValue("ctlOrdQty", szTemp.str());
+		
+		int nTotalLot = (int) QuoteRow.GetCellValue(clTotalLot, 0.0);
+		szTemp = nTotalLot;
+		DlgSetControlValue("ctlTotaQty", szTemp.str());
+		
+		int nPayUpTick = (int) QuoteRow.GetCellValue(clPayUpTick, 0.0);
+		szTemp = nPayUpTick;
+		DlgSetControlValue("ctlPayUpTicks", szTemp.str());
+		
+		int nBench = (int) QuoteRow.GetCellValue(clBenchmark, 0.0);
+		szTemp = nBench;
+		DlgSetControlValue("Benchmark", szTemp.str());
+	}
+	else
+	{
+		FTStr szQuoteSym, szHedgeSym, szExpiry;
+		FlexAppRules::RowInfoArray selRows;
+		FlexAppRules::RowInfo QuoteRow;
+		int nRows = MainGetSelectedRows(selRows);
+		if (nRows==1)
+		{
+			 QuoteRow = selRows[0];
+		}
+		else // Should never come to this else - verified in   SHOW_DIALOG
+		{
+			MsgBox("SPREADER BUILD", "Please select ONE contract to quote", 'E');
+			DlgRunCommand("CLOSE");
+			return false;
+		}
+		szQuoteSym = QuoteRow.GetSymbol();
+		DlgSetControlValue("symQuote", szQuoteSym.str());
+
+		szQuoteSym.Right(2,szExpiry);				
+		if (strstr(szQuoteSym.str(),SYM_NAME_NKD))
+		{	
+			szHedgeSym = SYM_NAME_NIY; szHedgeSym+=szExpiry;
+		}
+		else if (strstr(szQuoteSym.str(),SYM_NAME_NIY))
+		{
+			szHedgeSym = SYM_NAME_NKD; szHedgeSym+=szExpiry;
+		}
+		else // Should never come to this else - verified in SHOW_DIALOG
+		{
+			MsgBox("SPREADER BUILD", "Please select a Nikkei contract to quote", 'E');
+			return true;
+		}
+		
+		DlgSetControlValue("symHedge", szHedgeSym.str());
+				
+		DlgSetProperty(NULL,"title","NIKKEI SPREAD : ADD");
+
+		DlgSetControlValue("optQuoteSide", "BUY");
+        DlgSetControlValue("optHedgeSide", "SELL");
+		
+		DlgSetProperty("btnOK", "label", "BUY");
+		
+		DlgSetControlValue("ctlOrdQty", "1");
+		DlgSetControlValue("ctlTotaQty", "1");
+		DlgSetControlValue("ctlPayUpTicks", "0");
+		DlgSetControlValue("lblQuoteMktSide", "Bid");
+		DlgSetControlValue("lblHedgeMktSide","Bid"); 
+		DlgSetControlValue("Benchmark", "0");		
+		DlgSetControlValue("optMode", STRAT_MODE_ALWAYS);
+	}
+	Set_param_str("REFRESH",0);
+	RunRule(NK_SPD_DLG);
+
+	if(!IsStratInEditMode)
+	{
+		char szMktData[64]="";
+		sprintf(szMktData,"%.0f",g_dLastSpread);
+		DlgSetControlValue("Benchmark",szMktData);
+	}
+
+	Set_param_str("INIT",0);
+	RunRule(NK_SPD_DLG);
+}
+else if(szParam[0] == 'Q')// QSIDE
+{
+	FTStr quoteSide;
+
+	DlgGetControlValue("optQuoteSide",quoteSide.str());
+
+	if(strstr(quoteSide.str(),"SELL"))
+	{
+		DlgSetControlValue("optHedgeSide","BUY");
+	}
+	else if(strstr(quoteSide.str(),"BUY"))
+	{
+		DlgSetControlValue("optHedgeSide","SELL");
+	}
+	Set_param_str("REFRESH",0);
+	RunRule(NK_SPD_DLG);	
+}
+else if(szParam[0] == 'H')// HSIDE
+{
+	FTStr hedgeSide;
+
+	DlgGetControlValue("optHedgeSide",hedgeSide.str());
+
+	if(strstr(hedgeSide.str(),"SELL"))
+	{
+		DlgSetControlValue("optQuoteSide","BUY");
+	}
+	else if(strstr(hedgeSide.str(),"BUY"))
+	{
+		DlgSetControlValue("optQuoteSide","SELL");
+	}
+	Set_param_str("REFRESH",0);
+	RunRule(NK_SPD_DLG);
+}
+else if (szParam[0] == 'I')// INIT
+{
+	DlgDisableControl("ctlOrdQty");
+	
+	DlgSetTabOrder("optQuoteSide", 1);
+	DlgSetTabOrder("optHedgeSide", 2);
+	DlgSetTabOrder("StratName", 3);
+	DlgSetTabOrder("ctlOrdQty", 4);
+	DlgSetTabOrder("ctlTotaQty", 5);
+	DlgSetTabOrder("ctlPayUpTicks", 6);
+	DlgSetTabOrder("btnOK", 7);
+}
+else if(szParam[0] == 'R')// REFRESH
+{
+	FTStr quoteSide, symQuote, symHedge, szExpiry, symCurr;
+	FTStr szMktBidSpd, szMktLastSpd, szMktAskSpd;
+	char szMktData[64]="";
+
+	DlgGetControlValue("optQuoteSide",quoteSide.str());
+	DlgGetControlValue("symQuote", symQuote.str());
+	DlgGetControlValue("symHedge", symHedge.str());
+	
+	double quoteBid=0.0, quoteAsk=0.0, hedgeBid=0.0, hedgeAsk=0.0;
+	MarketInfo minfoQuote(symQuote), minfoHedge(symHedge);
+	quoteBid = minfoQuote.GetBid();
+	quoteAsk = minfoQuote.GetAsk();
+	hedgeBid = minfoHedge.GetBid();
+	hedgeAsk = minfoHedge.GetAsk();
+	
+	if(strstr(quoteSide,"SELL"))
+	{
+		DlgSetControlValue("lblQuoteMktSide","Ask");
+		DlgSetControlValue("lblHedgeMktSide","Ask");
+		DlgSetControlValue("lblMktSpdSide","Sell Spread");
+		sprintf(szMktData,"%.0f",quoteAsk);
+		DlgSetControlValue("lblQuoteMktData",szMktData);
+		sprintf(szMktData,"%.0f",hedgeAsk);
+		DlgSetControlValue("lblHedgeMktData",szMktData);
+		DlgSetProperty("btnOK", "label", "SELL");
+	}
+	else if(strstr(quoteSide,"BUY"))
+	{
+		DlgSetControlValue("lblQuoteMktSide","Bid");
+		DlgSetControlValue("lblHedgeMktSide","Bid");
+		DlgSetControlValue("lblMktSpdSide","Buy Spread");
+		sprintf(szMktData,"%.0f",quoteBid);
+		DlgSetControlValue("lblQuoteMktData",szMktData);
+		sprintf(szMktData,"%.0f",hedgeBid);
+		DlgSetControlValue("lblHedgeMktData",szMktData);
+		DlgSetProperty("btnOK", "label", "BUY");
+	}
+	
+	sprintf(g_QuoteSym,"%s",symQuote.str());
+	sprintf(g_HedgeSym,"%s",symHedge.str());
+	symQuote.Right(4,szExpiry);	
+	symCurr="6J"; symCurr+=szExpiry;
+	sprintf(g_Currency,"%s",symCurr.str());
+	RefreshMarketSpreads();
+	
+	sprintf(szMktData,"%.2f",g_dBidSpread);
+	DlgSetControlValue("mdBidSpd",szMktData);
+	
+	sprintf(szMktData,"%.2f",g_dLastSpread);
+	DlgSetControlValue("mdLastSpd",szMktData);
+	
+	sprintf(szMktData,"%.2f",g_dAskSpread);
+	DlgSetControlValue("mdAskSpd",szMktData);	
+}
+else if(szParam[0] == 'U')// UP
+{
+	FTStr szSpdPoint;
+	int	nSpdPoint=0;
+	DlgGetControlValue("Benchmark",szSpdPoint.str());
+	nSpdPoint = atoi(szSpdPoint.str());
+	nSpdPoint += SPD_TICK;
+	szSpdPoint = nSpdPoint;
+	DlgSetControlValue("Benchmark", szSpdPoint.str());
+	
+	Set_param_str("REFRESH",0);
+	RunRule(NK_SPD_DLG);
+}
+else if(szParam[0] == 'D')// DOWN
+{
+	FTStr szSpdPoint;
+	int	nSpdPoint=0;
+	DlgGetControlValue("Benchmark",szSpdPoint.str());
+	nSpdPoint = atoi(szSpdPoint.str());
+	nSpdPoint -= SPD_TICK;
+	szSpdPoint = nSpdPoint;
+	DlgSetControlValue("Benchmark", szSpdPoint.str());
+	
+	Set_param_str("REFRESH",0);
+	RunRule(NK_SPD_DLG);
+}
+else if(szParam[0] == 'C')// CONFIRM
+{
+	int nPayUpTicks=0, nStratId=0, nOrdLot=0, nTotalLot=0, nBenchmark=0;
+	FTStr szTime, szStratId, szQuoteSide, szQuoteSymbol, szHedgeSymbol, szStratName, szPortfolio, szStratPort, szStratMode;
+	FTStr szOrdLot, szTotalLot, szPayUpTicks, szBenchmark;
+	
+	if (IsStratInEditMode)
+	{	
+		RowInfoArray aRows;
+		MainGetSelectedRows(aRows);
+		szPortfolio = aRows[0].GetPortfolio();	
+	}
+	else
+	{
+		Current_Time6(szTime.str());
+		szStratId = szTime;
+		nStratId = atoi(szStratId.str()); 
+	
+		DlgGetControlValue("StratName", szStratName.str());
+	
+		Pop_Msg1(szStratId);
+		Pop_Msg1(szStratName);
+		if(strlen(szStratName.str()) == 0)
+		{
+			szStratName = szStratId;
+		}
+		Pop_Msg1(szStratName);
+		
+		szStratPort = TraderName(); 
+		szStratPort+="_"; szStratPort += FLEX_OMRULE_NKSPD;
+		szStratPort+="_"; szStratPort += szStratId;
+		
+		szPortfolio = szStratPort;
+	}
+	
+	DlgGetControlValue("symQuote",szQuoteSymbol.str());
+	DlgGetControlValue("symHedge",szHedgeSymbol.str());
+		
+	DlgGetControlValue("ctlOrdQty",szOrdLot.str());
+	nOrdLot = atoi(szOrdLot.str());
+		
+	DlgGetControlValue("ctlTotaQty",szTotalLot.str());
+	nTotalLot = atoi(szTotalLot.str());
+	
+	DlgGetControlValue("ctlPayUpTicks",szPayUpTicks.str());
+	nPayUpTicks = atoi(szPayUpTicks.str());
+	
+	DlgGetControlValue("Benchmark",szBenchmark.str());
+	nBenchmark = atoi(szBenchmark.str());
+	
+	DlgGetControlValue("optQuoteSide", szQuoteSide.str());
+	
+	DlgGetControlValue("optMode",szStratMode.str());
+	if (!strlen(szStratMode.str()))
+	{
+		MsgBox("Invalid Quoting Mode", "Please select a valid quoting mode", 'E');
+		return true;
+	}
+	
+	if (nOrdLot > nTotalLot)
+	{
+		strRuleLog=strRuleName;
+		strRuleLog+="nOrdLot="; strRuleLog+=nOrdLot;
+		strRuleLog+=" Greater Than nTotalLot="; strRuleLog+=nTotalLot;
+		strRuleLog+="!";
+		Pop_Msg1(strRuleLog);
+		
+		MsgBox("Invalid OrdLot/TotalLots", "OrdLot exceeds TotalLot!", 'E');
+		
+		return true;
+	}
+	
+	if(IsStratInEditMode)
+	{
+		IsStratInEditMode = false;
+		
+		if (IsEditFromInit == true)
+		{
+			Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szQuoteSymbol.str(), "NKSP_STATUS", STRAT_STATUS_INIT);
+			Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szHedgeSymbol.str(), "NKSP_STATUS", STRAT_STATUS_INIT);
+		}
+		else
+		{
+			Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szQuoteSymbol.str(), "NKSP_STATUS", STRAT_STATUS_EDITED);
+			Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szHedgeSymbol.str(), "NKSP_STATUS", STRAT_STATUS_EDITED);
+		}
+		IsEditFromInit = false;		
+	}
+	else
+	{	
+		if (strstr(szQuoteSide.str(),"BUY"))
+		{
+			Add_Symbol_Buy(szPortfolio.str(), szQuoteSymbol.str(), 0);
+			Add_Symbol_Sell(szPortfolio.str(), szHedgeSymbol.str(), 0);
+			Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szQuoteSymbol.str(), "NKSP_SIDE", "BUY");
+			Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szHedgeSymbol.str(), "NKSP_SIDE", "SELL");
+		}
+		else if (strstr(szQuoteSide.str(),"SELL"))
+		{
+			Add_Symbol_Sell(szPortfolio.str(), szQuoteSymbol.str(), 0);
+			Add_Symbol_Buy(szPortfolio.str(), szHedgeSymbol.str(), 0);
+			Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szQuoteSymbol.str(), "NKSP_SIDE", "SELL");
+			Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szHedgeSymbol.str(), "NKSP_SIDE", "BUY");
+		}
+
+		Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szQuoteSymbol.str(), "ACCOUNT", DEF_ACCOUNT);
+		Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szHedgeSymbol.str(), "ACCOUNT", DEF_ACCOUNT);
+		
+		Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szQuoteSymbol.str(), "NKSP_LEG", LEG_QUOTE);
+		Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szHedgeSymbol.str(), "NKSP_LEG", LEG_HEDGE);
+
+		Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szQuoteSymbol.str(), "NKSP_DISPLAY", LEG_QUOTE);
+		Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szHedgeSymbol.str(), "NKSP_DISPLAY", LEG_HEDGE);
+		
+		Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szQuoteSymbol.str(), "STRAT_NAME", szStratName);
+		Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szHedgeSymbol.str(), "STRAT_NAME", szStratName);
+		
+		Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szQuoteSymbol.str(), "NKSP_PORT", szStratPort);
+		Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szHedgeSymbol.str(), "NKSP_PORT", szStratPort);
+	
+		Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szQuoteSymbol.str(), "NKSP_STRATID", nStratId);
+		Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szHedgeSymbol.str(), "NKSP_STRATID", nStratId);
+		
+		Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szQuoteSymbol.str(), "NKSP_STATUS", STRAT_STATUS_INIT);
+		Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szHedgeSymbol.str(), "NKSP_STATUS", STRAT_STATUS_INIT);
+		
+		Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szQuoteSymbol.str(), "NKSP_STRAT_IND", 1);
+		Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szHedgeSymbol.str(), "NKSP_STRAT_IND", 1);
+	}
+	
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szQuoteSymbol.str(), "NKSP_BENCH", nBenchmark);
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szHedgeSymbol.str(), "NKSP_BENCH", nBenchmark);
+
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szQuoteSymbol.str(), "NKSP_RUNNING", 0);
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szHedgeSymbol.str(), "NKSP_RUNNING", 0);
+	
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szQuoteSymbol.str(), "NKSP_ORDQTY", nOrdLot);
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szHedgeSymbol.str(), "NKSP_ORDQTY", nOrdLot);
+	
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szQuoteSymbol.str(), "NKSP_TOTALQTY", nTotalLot);
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szHedgeSymbol.str(), "NKSP_TOTALQTY", nTotalLot);
+	
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szQuoteSymbol.str(), "NKSP_PAYUPTICK", nPayUpTicks);
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szHedgeSymbol.str(), "NKSP_PAYUPTICK", nPayUpTicks);
+	
+	Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szQuoteSymbol.str(), "NKSP_MODE", szStratMode.str());
+	Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szHedgeSymbol.str(), "NKSP_MODE", szStratMode.str());
+
+	DlgRunCommand("OK");
+}
+else if (szParam[0] == 'c')// cancel
+{
+	DlgRunCommand("CLOSE");	
+}
+
+
+_END_FORM_ *****************************************

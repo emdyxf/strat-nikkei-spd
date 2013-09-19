@@ -1,0 +1,33 @@
+_STRT_NEW_FORM_ 1 PNL_COMBO 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:PNL_COMBO
+/**
+ * Calculate Combo PnL.
+ * Usage: PNL_COMBO
+ * Column Dependencies:
+ * Analytic Dependencies: **/
+ 
+double  mark_long_pos, mark_short_pos, sld_val, buy_val;
+
+mark_long_pos = ( BUY_EXEC_SHRS  - SELL_EXEC_SHRS -
+         SHORT_EXEC_SHRS ) * LAST;
+IF(mark_long_pos LT 0){
+        mark_short_pos = -mark_long_pos;
+        mark_long_pos = 0;
+} ELSE {
+        mark_short_pos = 0;
+}
+sld_val = SELL_EXEC_SHRS * SELL_APR + SHORT_EXEC_SHRS * SHORT_APR;
+buy_val = BUY_EXEC_SHRS * BUY_APR ;
+
+Set_Column_Value("TOTAL_PNL",mark_long_pos - mark_short_pos + sld_val - buy_val );
+Set_Column_Value("REAL_PNL",sld_val - buy_val);
+Set_Column_Value("NETT_QTY",SELL_EXEC_SHRS - BUY_EXEC_SHRS);
+
+RowInfoArray aRows;
+int iRows = MainGetRows(NULL, PORTFOLIO, aRows);
+if(iRows != 2)
+	return true;
+
+RETURN true;
+
+
+_END_FORM_ *****************************************

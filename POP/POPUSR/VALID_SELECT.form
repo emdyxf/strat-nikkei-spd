@@ -1,0 +1,46 @@
+_STRT_NEW_FORM_ 1 VALID_SELECT 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:VALID_SELECT
+/******************************************************************
+Reserved Rule. Runs when selecting a row.
+******************************************************************/
+
+static ColumnInfo clWaveName("WAVENAME");
+
+if(!strcmp(GetScreenName(), "MAIN"))
+{
+	FlexAppRules::RowInfoArray row;
+	int nRows = MainGetSelectedRows(row);
+	
+	if(nRows == 1)
+	{
+		FilterOinfo(SYM,PORTFOLIO,NULL);
+	}
+	else if (nRows >1)
+	{
+		FTStr szWavename, szWaveTemp;
+		row[0].GetCellValue(clWaveName, szWavename);
+		
+		if (!strlen(szWavename))
+		{
+			FilterOinfo(NULL,PORTFOLIO,NULL);
+			return true;
+		}
+			
+		for (int i=1; i<nRows; i++)
+		{
+			row[i].GetCellValue(clWaveName, szWaveTemp);
+			if (strcmp(szWavename, szWaveTemp))
+			{
+				FilterOinfo(NULL,PORTFOLIO,NULL);
+				return true;
+			}
+		}
+		
+		FilterOinfo(NULL, PORTFOLIO, szWavename);
+	}
+	
+}
+
+return true;
+
+
+_END_FORM_ *****************************************

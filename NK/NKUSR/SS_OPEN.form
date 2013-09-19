@@ -1,0 +1,34 @@
+_STRT_NEW_FORM_ 1 SS_OPEN 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:SS_OPEN
+/******************************************************************
+SS Rule. Opened L2 screen and set tooltips
+******************************************************************/
+
+if(!strstr(SYM,"-"))
+{
+	Set_param_str("ORD_QTY",0);
+	Set_param_str("1",1);
+	RunRule(SS_LAYOUT_DEF);
+}
+
+RunRuleOnSymPort(SS_CTL,SYM,FixedMWPort());
+
+// Add tooltips for the SS widgets
+SS_TLB_Set_Property("ss_btn_CxlAll", "tooltip","Cancel All Orders");
+SS_TLB_Set_Property("ss_btn_Center", "tooltip","Center the Ladder");
+SS_TLB_Set_Property("ss_btn_CenterAll", "tooltip","Center All the Ladders");
+SS_TLB_Set_Property("ss_spbtn_ordQty", "tooltip","New Order Qty");
+SS_TLB_Set_Property("ss_spbtn_rplQty", "tooltip","Inc / Decr Order Size by this Qty");
+SS_TLB_Set_Property("ss_btn_Qty1", "tooltip","Quick Button to set New Order size");
+SS_TLB_Set_Property("ss_btn_Qty2", "tooltip","Quick Button to set New Order size");
+SS_TLB_Set_Property("ss_btn_Qty3", "tooltip","Quick Button to set New Order size");
+SS_TLB_Set_Property("ss_btn_Qty4", "tooltip","Quick Button to set New Order size");
+SS_TLB_Set_Property("ss_btn_Qty5", "tooltip","Quick Button to set New Order size");
+SS_TLB_Set_Property("ss_btn_QtyClr", "tooltip","Quick Button to Clear New Order size");
+SS_TLB_Set_Property("ss_btn_Mkt", "tooltip","Quick Button to set New Order Type");
+SS_TLB_Set_Property("ss_btn_Lim", "tooltip","Quick Button to set New Order Type");
+SS_TLB_Set_Property("ss_btn_Ioc", "tooltip","Quick Button to set New Order Type");
+
+return true;
+
+
+_END_FORM_ *****************************************

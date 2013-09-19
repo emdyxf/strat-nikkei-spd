@@ -1,0 +1,42 @@
+_STRT_NEW_FORM_ 1 POS_DATA 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:POS_DATA
+/******************************************************************
+POS_DATA
+
+Description	:
+Rule populating the commonly required columns.
+
+Events handled :
+FT_ROW_LOADED
+FT_SYM_DATA
+FT_MKT_DATA
+FT_TRD_DATA
+
+******************************************************************/
+
+const char szRule[DEF_STR_LEN] = "POS_DATA";
+
+int nVal = 0;
+double dVal = 0;
+
+if (REASON == FT_SYM_DATA || REASON == FT_ROW_LOADED)
+{
+	//Set Lot Size
+	nVal = 1;
+	if(Sym_Get_Int(FLID_LOT_SIZE, nVal) &&(nVal > 0 ))
+	{
+		Set_Column_Value(CLMNAME_LOT_SIZE, nVal);
+		Set_Column_Value(CLMNAME_ROUND_LOT, (double)1.0/nVal);
+	}
+	//Set Tick Size
+	dVal = 0.01;
+	if(Sym_Get_Double(FLID_TICK_SIZE, dVal) && (dVal > 0 ))
+	{
+		Set_Column_Value(CLMNAME_TICK_SIZE, dVal);
+		Set_Column_Value(CLMNAME_ROUND_PRICE, (double)1/dVal);
+	}
+}
+
+return true;
+
+
+_END_FORM_ *****************************************

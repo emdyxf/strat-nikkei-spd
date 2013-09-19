@@ -1,0 +1,69 @@
+_STRT_NEW_FORM_ 1 STATIC_COLUMNS 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:STATIC_COLUMNS
+char szInstrument[64]=""; 
+
+Pop_Msg1(SYM);
+
+enCMInstrType eInstrType = GetInstrType(SYM);
+
+switch(eInstrType)
+{
+	case enNikkeiUSD:
+		strcpy(szInstrument, "Nikkei - USD");
+		break;
+	case enNikkeiYEN:
+		strcpy(szInstrument, "Nikkei - YEN");
+		break;
+	case enYENUSD:
+		strcpy(szInstrument, "YEN/USD");
+		break;
+	default:
+		break;
+}
+
+/*
+if(strstr(SYM,GLOBAL_DELIMITER_STRING))
+{
+	switch(eInstrType)
+	{
+		case enGold:
+			strcpy(szInstrument, "Gold - Spread");
+			break;
+		case enSilver:
+			strcpy(szInstrument, "Silver - Spread");
+			break;
+		case enCopper:
+			strcpy(szInstrument, "Copper - Spread");
+			break;
+		default:
+			break;
+	}
+}
+else if(!strcmp(EXCHG, SHFE_DATA_EXCHANGE)) 
+{
+	Pop_Msg1("SHFE Symbols!");
+	switch(eInstrType)
+	{
+		case enGold:
+			strcpy(szInstrument, "Gold-SHFE");
+			Pop_Msg1("SHFE Gold!");
+			break;
+		case enSilver:
+			strcpy(szInstrument, "Silver-SHFE");
+			Pop_Msg1("SHFE Silver!");
+			break;
+		case enCopper:
+			strcpy(szInstrument, "Copper-SHFE");
+			Pop_Msg1("SHFE Copper!");
+			break;
+		default:
+			break;
+	}
+}
+*/
+
+Set_Column_Str("INSTRUMENT", szInstrument);
+Set_Column_Value("INSTR_TYPE", eInstrType);
+return 1;
+
+
+_END_FORM_ *****************************************

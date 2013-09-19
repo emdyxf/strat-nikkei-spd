@@ -1,0 +1,36 @@
+_STRT_NEW_FORM_ 1 NKSP_FILTER_STREET 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:NKSP_FILTER_STREET
+/***************************************************
+Strat Rule. Refresh the all order by StratID
+**************************************************/
+
+char szStratID[32] = "", szWaveName[32] = "";
+Get_param_str(szStratID, 0);
+Get_param_str(szWaveName, 1);
+
+bool bFilterVal= true;
+
+FTStr szMsg, szMemo, szWave, szId, szPort;
+
+Get_Column_Str("WAVE", szWave.str());
+Get_Column_Str("ID", szId.str());
+Get_Column_Str("PORTFOLIO", szPort.str());
+Get_Column_Str("MEMO", szMemo.str());
+
+int nLenMemo=0; 
+nLenMemo = strlen(szMemo);
+
+if (strlen(szMemo) && strlen(szStratID) && strstr(szMemo, szStratID))
+{
+	bFilterVal = false;
+}
+else
+{
+	bFilterVal = true;
+}
+
+FilterRow(bFilterVal);
+
+return true;
+
+
+_END_FORM_ *****************************************

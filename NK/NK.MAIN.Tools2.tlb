@@ -1,0 +1,146 @@
+widget:button
+Name:TlbBtnCreateStrategy
+Label:~ ADD 
+script:o SHOW_DIALOG NK_SPD ADD
+foreground:#FFFFFF
+background:#506051
+__END__
+__EndCfg
+widget:button
+Name:TlbBtnEditStrategy
+Label:~ EDIT 
+script:o SHOW_DIALOG NK_SPD EDIT
+foreground:#FFFFFF
+background:#506051
+__END__
+__EndCfg
+widget:label
+Name:
+Label:~ | 
+script:
+foreground:#ECECEC
+background:#292929
+__END__
+__EndCfg
+widget:button
+Name:TlbBtnStart
+Label:Icons/play.png~
+script:a RA_START_ALL
+foreground:#FFFFFF
+background:#C4E5D0
+__END__
+__EndCfg
+widget:button
+Name:TlbBtnStopOne
+Label:Icons/stop.png~
+script:a RA_STOP_ALL
+foreground:#FFFFFF
+background:#F6E3E3
+__END__
+__EndCfg
+widget:button
+Name:TlbBtnStopAll
+Label:Icons/stop_all.png~
+script:o PANIC_CANCEL_ALL
+foreground:#FFFFFF
+background:#FFD7BE
+__END__
+__EndCfg
+widget:label
+Name:
+Label:~ | 
+script:
+foreground:#ECECEC
+background:#292929
+__END__
+__EndCfg
+widget:button
+Name:tlbBtnLadder
+Label:Icons/ladder.png~
+script:o L2_LAUNCH
+foreground:#FFFFFF
+background:#BFBFBF
+__END__
+__EndCfg
+widget:label
+Name:
+Label:~ | 
+script:
+foreground:#ECECEC
+background:#292929
+__END__
+__EndCfg
+widget:button
+Name:TlbHomeBtn
+Label:~  HOME  
+script:col STRAT_NAME
+foreground:#000000
+background:#C7AD7D
+__END__
+__EndCfg
+widget:button
+Name:tlbBtnMarket
+Label:~ MKT 
+script:col BID
+foreground:#FFFFFF
+background:#65585B
+__END__
+__EndCfg
+widget:button
+Name:tlbBtnPosition
+Label:~ POS 
+script:col POS_DATA
+foreground:#FFFFFF
+background:#65585B
+__END__
+__EndCfg
+widget:button
+Name:tlbBtnParams
+Label:~ PARAMS 
+script:col PAIR_SIDE
+foreground:#FFFFFF
+background:#65585B
+__END__
+__EndCfg
+widget:label
+Name:
+Label:~ | 
+script:
+foreground:#ECECEC
+background:#292929
+__END__
+__EndCfg
+widget:button
+Name:tlbBtnFilter
+Label:Icons/filter.png~
+script:o FILTER_MAIN_SCREEN SPREADS
+foreground:#FFFFFF
+background:#F2E4EA
+__END__
+__EndCfg
+widget:label
+Name:
+Label:~ | 
+script:
+foreground:#ECECEC
+background:#292929
+__END__
+__EndCfg
+widget:label
+Name:lblCMD
+Label:~ CMD : 
+script:
+foreground:#FFFFFF
+background:#292929
+__END__
+__EndCfg
+widget:entry
+Name:entryCMD
+Label:
+script:o RUNCMD
+foreground:#000000
+background:#FFFFFF
+__END__
+width:-1
+value:
+__EndCfg

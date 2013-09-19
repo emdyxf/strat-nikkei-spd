@@ -1,0 +1,192 @@
+_STRT_NEW_FORM_ 1 NKSP_EXECS 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:NKSP_EXECS
+/***************************************************
+Strat Rule. Runs whenever we get a fill. Updates information on the executed shares relating to the spread.
+**************************************************/
+const char szRule[DEF_STR_LEN] = "NKSP_EXECS:";
+
+FTStr szLeg, szStratSym, szStratPort, szQuoteSide, szHedgeSide, szQuoteStatus, szHedgeStatus;
+FTStr symQuote, symHedge;
+FTStr msgDebug;
+double dBotAvgQuote=0.0, dBotAvgHedge=0.0, dSoldAvgQuote=0.0, dSoldAvgHedge=0.0;
+double dBotValQuote=0.0, dBotValHedge=0.0, dSoldValQuote=0.0, dSoldValHedge=0.0;
+double dBotQtyQuote=0.0, dBotQtyHedge=0.0, dSoldQtyQuote=0.0, dSoldQtyHedge=0.0;
+double dStratId=0.0;
+
+Get_Column_Str("NKSP_PORT", szStratPort.str());
+
+if (!strstr(szStratPort.str(), FLEX_OMRULE_NKSPD))
+{
+	//Pop_Msg("NKSP_EXECS: Skip -> Not a Strat Row!");
+	return false;
+}
+
+Get_Column_Str("NKSP_LEG", szLeg.str());
+
+FlexAppRules::RowInfoArray aRows;
+int nStratRow = MainGetRows(NULL, szStratPort.str(), aRows);
+
+if (nStratRow == 2)
+{
+	if(!strcmp(aRows[0].GetSymbol(), SYM))
+	{
+		szStratSym = aRows[1].GetSymbol();
+	}
+	else
+	{
+		szStratSym = aRows[0].GetSymbol();
+	}
+}
+else
+{
+	Pop_Msg("NKSP_EXECS: Failed to get 2 rows!");
+	return false;
+}
+
+if (!strcmp(szLeg.str(), LEG_QUOTE))
+{
+	dBotAvgQuote = BUY_APR;
+	dSoldAvgQuote = SELL_APR;
+	dBotValQuote = BUY_EXEC_VAL;
+	dSoldValQuote = SELL_EXEC_VAL;
+	dBotQtyQuote = BUY_EXEC_SHRS;
+	dSoldQtyQuote = SELL_EXEC_SHRS;
+	
+	Get_Port_Sym_Column_Value_Else(szStratPort.str(), szStratSym.str(), "BUY_APR", dBotAvgHedge, 0.0);
+	Get_Port_Sym_Column_Value_Else(szStratPort.str(), szStratSym.str(), "SELL_APR", dSoldAvgHedge, 0.0);
+	
+	Get_Port_Sym_Column_Value_Else(szStratPort.str(), szStratSym.str(), "BUY_EXEC_VAL", dBotValHedge, 0.0);
+	Get_Port_Sym_Column_Value_Else(szStratPort.str(), szStratSym.str(), "SELL_EXEC_VAL", dSoldValHedge, 0.0);
+	
+	Get_Port_Sym_Column_Value_Else(szStratPort.str(), szStratSym.str(), "BUY_EXEC_SHRS", dBotQtyHedge, 0.0);
+	Get_Port_Sym_Column_Value_Else(szStratPort.str(), szStratSym.str(), "SELL_EXEC_SHRS", dSoldQtyHedge, 0.0);
+
+	Get_Column_Str("NKSP_STATUS", szQuoteStatus.str());
+	Get_Port_Sym_Column_Str(szStratPort.str(),szStratSym.str(),"NKSP_STATUS",szHedgeStatus.str());
+	
+	symQuote = SYM;
+	Get_Column_Str("NKSP_SIDE", szQuoteSide.str());
+	symHedge = szStratSym;
+}
+else if (!strcmp(szLeg.str(), LEG_HEDGE))
+{
+	dBotAvgHedge = BUY_APR;
+	dSoldAvgHedge = SELL_APR;
+	dBotValHedge = BUY_EXEC_VAL;
+	dSoldValHedge = SELL_EXEC_VAL;
+	dBotQtyHedge = BUY_EXEC_SHRS;
+	dSoldQtyHedge = SELL_EXEC_SHRS;
+
+	Get_Port_Sym_Column_Value_Else(szStratPort.str(), szStratSym.str(), "BUY_APR", dBotAvgQuote, 0.0);
+	Get_Port_Sym_Column_Value_Else(szStratPort.str(), szStratSym.str(), "SELL_APR", dSoldAvgQuote, 0.0);
+	
+	Get_Port_Sym_Column_Value_Else(szStratPort.str(), szStratSym.str(), "BUY_EXEC_VAL", dBotValQuote, 0.0);
+	Get_Port_Sym_Column_Value_Else(szStratPort.str(), szStratSym.str(), "SELL_EXEC_VAL", dSoldValQuote, 0.0);
+	
+	Get_Port_Sym_Column_Value_Else(szStratPort.str(), szStratSym.str(), "BUY_EXEC_SHRS", dBotQtyQuote, 0.0);
+	Get_Port_Sym_Column_Value_Else(szStratPort.str(), szStratSym.str(), "SELL_EXEC_SHRS", dSoldQtyQuote, 0.0);
+	
+	Get_Column_Str("NKSP_STATUS", szHedgeStatus.str());
+	Get_Port_Sym_Column_Str(szStratPort.str(),szStratSym.str(),"NKSP_STATUS",szQuoteStatus.str());
+	
+	symHedge = SYM;
+	Get_Column_Str("NKSP_SIDE", szHedgeSide.str());
+	symQuote = szStratSym;
+	
+}
+else
+{
+	Pop_Msg("NKSP_EXECS: Failed to match LegID!");
+	return false;
+}
+
+FTStr msgValue=""; msgValue+=szRule; msgValue+=szStratPort; msgValue+=" ["; msgValue+=symQuote; msgValue+="]";
+msgValue+=" dBotAvgQuote=";
+msgValue+=dBotAvgQuote;
+msgValue+=" dBotValQuote=";
+msgValue+=dBotValQuote;
+msgValue+=" dBotQtyQuote=";
+msgValue+=dBotQtyQuote;
+msgValue+=" dSoldAvgQuote=";
+msgValue+=dSoldAvgQuote;
+msgValue+=" dSoldValQuote=";
+msgValue+=dSoldValQuote;
+msgValue+=" dSoldQtyQuote=";
+msgValue+=dSoldQtyQuote;
+
+Pop_Msg(msgValue);
+
+msgValue=""; msgValue+=szRule; msgValue+=szStratPort; msgValue+=" ["; msgValue+=symHedge; msgValue+="]";
+msgValue+=" dBotAvgHedge=";
+msgValue+=dBotAvgHedge;
+msgValue+=" dBotValHedge=";
+msgValue+=dBotValHedge;
+msgValue+=" dBotQtyHedge=";
+msgValue+=dBotQtyHedge;
+msgValue+=" dSoldAvgHedge=";
+msgValue+=dSoldAvgHedge;
+msgValue+=" dSoldValHedge=";
+msgValue+=dSoldValHedge;
+msgValue+=" dSoldQtyHedge=";
+msgValue+=dSoldQtyHedge;
+
+Pop_Msg(msgValue);
+
+// Update Positions
+int nNetPos = 0;
+nNetPos = (int) dBotQtyQuote - dSoldQtyQuote + dBotQtyHedge - dSoldQtyHedge;
+
+Set_Column_Value_Save("STRAT_POS", double(nNetPos));
+Set_Column_Value_Save("STRAT_POS_GRP", double(nNetPos/2.0));
+Set_Port_Sym_Column_Value_Save(szStratPort.str(),szStratSym.str(), "STRAT_POS", double(nNetPos));
+Set_Port_Sym_Column_Value_Save(szStratPort.str(),szStratSym.str(), "STRAT_POS_GRP", double(nNetPos/2.0));
+
+double dStratValue = 0.0;
+dStratValue = BUY_EXEC_VAL - SELL_EXEC_VAL;
+Set_Column_Value_Save("STRAT_VAL", dStratValue);
+
+// Update Executed Spread
+double dExecSpread = 0.0, dSpdFactor = 1.0;
+int nQuotePos = 0, nHedgePos =0;
+nQuotePos = (int) (dBotQtyQuote - dSoldQtyQuote);
+nHedgePos = (int) (dBotQtyHedge - dSoldQtyHedge);
+
+if (abs(nQuotePos) == abs(nHedgePos))
+{
+	dExecSpread = (dSoldValQuote + dSoldValHedge - dBotValQuote - dBotValHedge)/(nHedgePos*1.0) ;
+
+	Set_Column_Value_Save("EXEC_SPD", dExecSpread*dSpdFactor);
+	Set_Port_Sym_Column_Value_Save(szStratPort.str(),szStratSym.str(), "EXEC_SPD", dExecSpread*dSpdFactor);
+
+	Set_Column_Value_Save("EXEC_SPD_GRP", dSpdFactor*dExecSpread/2.0);
+	Set_Port_Sym_Column_Value_Save(szStratPort.str(),szStratSym.str(), "EXEC_SPD_GRP", dSpdFactor*dExecSpread/2.0);
+}
+
+// Set Status
+double dblTotalQty=0.0;
+int iTotalQty=0;
+
+if((strstr(PORTFOLIO, FLEX_OMRULE_NKSPD)) && (BUY_LEAVES==0 && SELL_LEAVES==0))
+{
+	Get_Column_Value_Else("NKSP_TOTALQTY",dblTotalQty,0);
+	iTotalQty = (int)dblTotalQty;
+	
+	if (!strcmp(szQuoteStatus.str(), STRAT_STATUS_CXLD) && !strcmp(szHedgeStatus.str(), STRAT_STATUS_CXLD))
+	{
+		return true;
+	}
+	
+	if (abs(nQuotePos) == abs(nHedgePos) && abs(nQuotePos)==iTotalQty)
+	{
+		msgDebug="Strat [";msgDebug+=PORTFOLIO;msgDebug+="]-Execs ["; msgDebug+=EXEC_SHARES;
+		msgDebug+="] equals TotalQty [";msgDebug+=iTotalQty;msgDebug+="] : Strat Completed!";
+        Pop_Msg(msgDebug);
+		
+        Set_Column_Str_Save("NKSP_STATUS", STRAT_STATUS_COMPLETE);
+		Set_Port_Sym_Column_Str_Save(szStratPort.str(),szStratSym.str(), "NKSP_STATUS", STRAT_STATUS_COMPLETE);
+	}	
+}
+
+return true;
+
+
+_END_FORM_ *****************************************

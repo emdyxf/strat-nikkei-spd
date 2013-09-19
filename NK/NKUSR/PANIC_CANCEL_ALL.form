@@ -1,0 +1,9 @@
+_STRT_NEW_FORM_ 1 PANIC_CANCEL_ALL 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:PANIC_CANCEL_ALL
+// Rule that Panic Cancels All Orders and disabled Auto Trading
+
+panic_cxl_all(true,FLEX_ALL_ORDERS);
+
+return true;
+
+
+_END_FORM_ *****************************************

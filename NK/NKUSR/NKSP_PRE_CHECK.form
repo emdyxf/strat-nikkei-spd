@@ -1,0 +1,62 @@
+_STRT_NEW_FORM_ 1 NKSP_PRE_CHECK 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:NKSP_PRE_CHECK
+/***************************************************
+NKSP Strat Rule. Sanity checks before start strategy
+**************************************************/
+
+RowInfoArray selRows;
+int iSel = MainGetSelectedRows(selRows);
+
+// STEP 1 : First Check if the two strat rows from the same strategy is selected
+
+if(iSel == 2)
+{
+	if (!strcmp(selRows[0].GetPortfolio(), FixedMWPort()) || !strcmp(selRows[1].GetPortfolio(),FixedMWPort()))
+	{		
+		MsgBox("STRAT Pre-Check", "Please select rows from the strategy portfolio", 'I');
+		return false;
+	}
+	else if (strcmp(selRows[0].GetPortfolio(),selRows[1].GetPortfolio()))
+	{
+		MsgBox("STRAT Pre-Check", "Please select two(2) rows from the same strategy", 'I');
+		return false;
+	}
+}
+else
+{
+	MsgBox("STRAT Pre-Check", "Please select two(2) rows from the same strategy to start strategy", 'I');
+	return false;
+}
+
+// STEP 2 : Finally Check for destinations and Auto_Trade
+
+bool bSTRAT_CHECK = false;
+
+char szDefDest[32] = "";
+FTStr dest(""); Get_Default_Listed_Dest(dest); 
+strncpy(szDefDest,dest.str(),sizeof(szDefDest)); 
+
+if(!Is_Dest_Up(ALGO_DEST))
+{
+	MsgBox("DESTINATIONS","Algo Dest not up! Cannot fire order!", 'I');
+	bSTRAT_CHECK = false;
+}
+else if(!Is_Dest_Up(szDefDest))
+{
+	MsgBox("DESTINATIONS","Default Dest not up! Cannot fire order!", 'I');
+	bSTRAT_CHECK = false;
+}
+else if(!Is_Auto_Enabled())
+{
+	Pop_MsgNoTimeNoPort("Auto Order => AUTO-TRADE button is red");
+	MsgBoxModeless("AUTO TRADE","Auto Order => AUTO-TRADE button is red",'I');
+	bSTRAT_CHECK = false;
+}
+else
+{
+	bSTRAT_CHECK = true;
+}
+
+return bSTRAT_CHECK;
+
+
+_END_FORM_ *****************************************

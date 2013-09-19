@@ -1,0 +1,29 @@
+_STRT_NEW_FORM_ 1 VALID_SELECT 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:VALID_SELECT
+/******************************************************************
+Reserved Rule. Runs when selecting a row.
+******************************************************************/
+
+if(strcmp(GetScreenName(), "MAIN"))
+	return true;
+
+char StratPairID[32]="", szWaveName[32]="";
+Get_Column_Str("NKSP_PORT",StratPairID);
+Get_Column_Str("WAVENAME", szWaveName);
+
+FilterOinfo(NULL,NULL,NULL);
+
+if (strlen(StratPairID))
+{
+	Set_param_str(StratPairID,0);
+	Set_param_str(szWaveName,1);
+	
+	RunRuleOnAll(NKSP_FILTER_ALL);
+	
+	Set_param_str("",0);
+	Set_param_str("",1);
+}
+
+return true;
+
+
+_END_FORM_ *****************************************

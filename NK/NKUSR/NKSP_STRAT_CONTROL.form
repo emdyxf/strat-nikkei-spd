@@ -1,0 +1,219 @@
+_STRT_NEW_FORM_ 1 NKSP_STRAT_CONTROL 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:NKSP_STRAT_CONTROL
+/***************************************************
+NKSP Strat Rule. Perform front-end strategy management
+**************************************************/
+
+char szParam[32] = "";
+Get_param_str(szParam, 0);
+
+/*
+ * Expected Parameters
+ * START		: Start/restart a built strategy
+ * STOP			: Stop a running strategy
+ * CANCEL		: Cancel the strategy
+ * CANCELALL	: Panic Cancel
+*/
+
+static ColumnInfo clStratStatus("NKSP_STATUS");
+
+if(!strcmp(szParam, "START"))// START
+{
+	Pop_Msg(szParam);
+
+	if(!RunRule(NKSP_PRE_CHECK))	
+	{	
+		Pop_Msg_Color("Pre-Check Failed! Cannot start strategy!", 0, "red", "black"); 
+		return true;	
+	}
+	
+	FlexAppRules::RowInfoArray aRows;
+	MainGetSelectedRows(aRows);
+	FTStr szPortfolio=""; szPortfolio = aRows[0].GetPortfolio();
+
+	FTStr szTemp1, szTemp2;
+	aRows[0].GetCellValue(clStratStatus, szTemp1);
+	aRows[1].GetCellValue(clStratStatus, szTemp2); 
+	
+	if (!strcmp(szTemp1.str(), STRAT_STATUS_INIT) && !strcmp(szTemp2.str(), STRAT_STATUS_INIT))
+	{
+		// Both legs in "Init" Status, fire new client orders
+		Set_param_str("",0);	
+		Set_param_str(szPortfolio.str(),0);
+		Set_param_str("",1);
+		Set_param_str("START",1);
+		Pop_Msg1("NKSP_STRAT_CONTROL:START");
+		RunRule(NKSP_STRAT_HANDLE);
+		Set_param_str("",0);
+		Set_param_str("",1);
+	}
+	else if (!strcmp(szTemp1.str(), START_STATUS_PAUSE) && !strcmp(szTemp2.str(), START_STATUS_PAUSE))
+	{
+		// Both legs in "Paused" Status, replace existing client orders to restart strategy
+		Set_param_str("",0);	
+		Set_param_str(szPortfolio.str(),0);
+		Set_param_str("",1);
+		Set_param_str("RESTART",1);
+		Pop_Msg1("NKSP_STRAT_CONTROL: RESTART");
+		RunRule(NKSP_STRAT_HANDLE);
+		Set_param_str("",0);
+		Set_param_str("",1);
+	}
+	else if (!strcmp(szTemp1.str(), STRAT_STATUS_EDITED) && !strcmp(szTemp2.str(), STRAT_STATUS_EDITED))
+	{
+		// Both legs in "Edited" Status, replace existing client orders to restart strategy
+		Set_param_str("",0);	
+		Set_param_str(szPortfolio.str(),0);
+		Set_param_str("",1);
+		Set_param_str("RESTART",1);
+		Pop_Msg1("NKSP_STRAT_CONTROL: RESTART");
+		RunRule(NKSP_STRAT_HANDLE);
+		Set_param_str("",0);
+		Set_param_str("",1);
+	}
+	else if (!strcmp(szTemp1.str(), STRAT_STATUS_WORKING) && !strcmp(szTemp2.str(), STRAT_STATUS_WORKING))
+	{
+		// Both legs in "Working" Status, issue warning and abort
+		MsgBox("Start Strategy", "Strat already in Working mode!", 'E');
+		return true;
+	}
+	else if (!strcmp(szTemp1.str(), STRAT_STATUS_CXLD) && !strcmp(szTemp2.str(), STRAT_STATUS_CXLD))
+	{
+		// Both legs in "Cancelled" Status, issue warning and abort
+		MsgBox("Start Strategy", "Strat already cancelled!", 'E');
+		return true;
+	}
+	else if (!strcmp(szTemp1.str(), STRAT_STATUS_STOP) && !strcmp(szTemp2.str(), STRAT_STATUS_STOP))
+	{
+		// Both legs in "Stopped" Status, issue warning and abort
+		MsgBox("Start Strategy", "Strat already stopped!", 'E');
+		return true;
+	}
+	else if (!strcmp(szTemp1.str(), STRAT_STATUS_COMPLETE) && !strcmp(szTemp2.str(), STRAT_STATUS_COMPLETE))
+	{
+		// Both legs in "Completed" Status, issue warning and abort
+		MsgBox("Start Strategy", "Strat already completed!", 'E');
+		return true;
+	}
+	else
+	{
+		// Status error, issue warning and abort
+		MsgBox("Start Strategy", "Error in Status!", 'E');
+		return true;
+	}
+}
+else if(!strcmp(szParam, "STOP"))
+{
+	Pop_Msg(szParam);
+	
+	if(!RunRule(NKSP_PRE_CHECK))	
+	{	
+		Pop_Msg_Color("Pre-Check Failed! Cannot pause strategy!", 0, "red", "black"); 
+		return true;	
+	}
+	
+	FlexAppRules::RowInfoArray aRows;
+	MainGetSelectedRows(aRows);
+	FTStr szPortfolio=""; szPortfolio = aRows[0].GetPortfolio();
+
+	FTStr szTemp1, szTemp2;
+	aRows[0].GetCellValue(clStratStatus, szTemp1);
+	aRows[1].GetCellValue(clStratStatus, szTemp2); 
+	
+	if (!strcmp(szTemp1.str(), STRAT_STATUS_INIT) && !strcmp(szTemp2.str(), STRAT_STATUS_INIT))
+	{
+		// Both legs in "Init" Status, issue warning and abort
+		MsgBox("Stop Strategy", "Strat still in Init mode!", 'E');
+		return true;
+	}
+	else if (!strcmp(szTemp1.str(), START_STATUS_PAUSE) && !strcmp(szTemp2.str(), START_STATUS_PAUSE))
+	{
+		// Both legs in "Stopped" issue warning and abort
+		MsgBox("Stop Strategy", "Strat already paused!", 'E');
+		return true;
+	}
+	else if (!strcmp(szTemp1.str(), STRAT_STATUS_EDITED) && !strcmp(szTemp2.str(), STRAT_STATUS_EDITED))
+	{
+		// Both legs in "Edited" Status, issue warning and abord
+		MsgBox("Stop Strategy", "Strat already stopped and still in Edited mode!", 'E');
+		return true;
+	}
+	else if (!strcmp(szTemp1.str(), STRAT_STATUS_WORKING) || !strcmp(szTemp2.str(), STRAT_STATUS_WORKING))
+	{
+		// Both legs in "Working" Status, replace existing client orders to stop strategy
+		Set_param_str("",0);	
+		Set_param_str(szPortfolio.str(),0);
+		Set_param_str("",1);
+		Set_param_str("STOP",1);
+		Pop_Msg1("NKSP_STRAT_CONTROL: STOP");
+		RunRule(NKSP_STRAT_HANDLE);
+		Set_param_str("",0);
+		Set_param_str("",1);
+		return true;
+	}
+	else if (!strcmp(szTemp1.str(), STRAT_STATUS_CXLD) && !strcmp(szTemp2.str(), STRAT_STATUS_CXLD))
+	{
+		// Both legs in "Cancelled" Status, issue warning and abort
+		MsgBox("Start Strategy", "Strat already cancelled!", 'E');
+		return true;
+	}
+	else if (!strcmp(szTemp1.str(), STRAT_STATUS_STOP) && !strcmp(szTemp2.str(), STRAT_STATUS_STOP))
+	{
+		// Both legs in "Stopped" Status, issue warning and abort
+		MsgBox("Start Strategy", "Strat already stopped!", 'E');
+		return true;
+	}
+	else if (!strcmp(szTemp1.str(), STRAT_STATUS_COMPLETE) && !strcmp(szTemp2.str(), STRAT_STATUS_COMPLETE))
+	{
+		// Both legs in "Completed" Status, issue warning and abort
+		MsgBox("Start Strategy", "Strat already completed!", 'E');
+		return true;
+	}
+	else
+	{
+		// Status error, issue warning and abort
+		MsgBox("Start Strategy", "Error in Status!", 'E');
+		return true;
+	}
+}
+else if(!strcmp(szParam, "CANCELALL"))
+{
+	Pop_Msg(szParam);
+	
+	FlexAppRules::RowInfoArray aRows;
+	int iSel = MainGetSelectedRows(aRows);
+	if (iSel == 0)	{	MainGetRows(NULL, FixedMWPort(), aRows);	}
+	
+	Pop_Msg_Color("PANIC CANCEL!", 0, "red", "black");
+	RunRule(PANIC_CANCEL_ALL);
+	RunRuleOnAll(NKSP_SET_STOP);
+}
+else if(!strcmp(szParam, "CANCEL"))
+{
+	Pop_Msg(szParam);
+	
+	if(!RunRule(NKSP_PRE_CHECK))	
+	{	
+		Pop_Msg_Color("Pre-Check Failed! Cannot cancel strategy!", 0, "red", "black"); 
+		return true;	
+	}
+	
+	FlexAppRules::RowInfoArray aRows;
+	MainGetSelectedRows(aRows);
+	FTStr szPortfolio=""; szPortfolio = aRows[0].GetPortfolio();
+
+	Set_param_str("",0);	
+	Set_param_str(szPortfolio.str(),0);
+	Set_param_str("",1);
+	Set_param_str("CANCEL",1);
+	Pop_Msg1("NKSP_STRAT_CONTROL: CANCEL");
+	RunRule(NKSP_STRAT_HANDLE);
+	Set_param_str("",0);
+	Set_param_str("",1);
+}
+else
+{
+	return false;
+}
+
+
+_END_FORM_ *****************************************

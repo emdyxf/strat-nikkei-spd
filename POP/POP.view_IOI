@@ -1,0 +1,5 @@
+SA.SYMBOL GA.SYMBOL G.
+SUM_VOLUME:11:int_com:gblank:No:honeydew2:navyblue:rank_n:const_n:exp_n:DESCR
+MAX_VOLUME:11:int_com:gblank:No:honeydew2:navyblue:rank_n:const_n:exp_n:DESCR
+MIN_ASK:12:frac:gblank:No:slateblue:white:rank_n:const_n:exp_n:DESCR
+AVG_VWAP:10:prec3:gblank:No:honeydew2:black:rank_n:const_n:exp_n:DESCR

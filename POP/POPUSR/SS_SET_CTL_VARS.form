@@ -1,0 +1,91 @@
+_STRT_NEW_FORM_ 1 SS_SET_CTL_VARS 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:SS_SET_CTL_VARS
+/******************************************************************
+SS Rule. Aggregate and populate total BUY/SELL quantities of NIY
+******************************************************************/
+bool bUpdated = false;
+FTStr szContract, szPort, szMsg, szDebugMsg, szPortName;
+
+char szExecVal[128]="", szExecQty[64]="";
+int iInstrType = 0; // 0 - NKD, 1 - NIY, 2 - 6J
+int iMonthOrder = 0; // 0-3: For 4 months
+
+using namespace FlexAppRules;
+static ColumnInfo cTotalBuyQty("TOTAL_BUY_QTY"), cTotalSellQty("TOTAL_SELL_QTY"), clPort("PORTFOLIO");
+static ColumnInfo clBuyExecVal("BUY_EXEC_VAL"), clSelExecVal("SELL_EXEC_VAL");
+static ColumnInfo clBuyExecQty("BUY_EXEC_SHRS"), clSelExecQty("SELL_EXEC_SHRS");
+
+double dContractExecs=0.0;
+int nContractPos=0;
+
+for (iInstrType; iInstrType<3 ; iInstrType++)
+{
+	dContractExecs = 0.0;
+	nContractPos = 0;
+	bUpdated = false;
+	for (int iMonthOrder=0; iMonthOrder<4; iMonthOrder++) // Up to next four quarters
+	{
+		szContract = GetContractSymbolFromInstrAndMonth(iInstrType, iMonthOrder);
+		
+		int iContractRows = 0;
+		RowInfoArray aContractRows;
+		iContractRows = MainGetRows(szContract, NULL, aContractRows);
+		
+		for(int i = 0; i < iContractRows; i++)
+		{
+			aContractRows[i].GetCellValue(clPort, szPort);
+			
+			if (strstr(szPort.str(), FixedMWPort()))
+			{ 			
+				dContractExecs += aContractRows[i].GetCellValue(clBuyExecVal, 0.0); 
+				dContractExecs -= aContractRows[i].GetCellValue(clSelExecVal, 0.0);
+				nContractPos += (int) aContractRows[i].GetCellValue(clBuyExecQty, 0.0);
+				nContractPos -= (int) aContractRows[i].GetCellValue(clSelExecQty, 0.0);
+				bUpdated = true;
+			}			
+		}
+	}
+	
+	if (bUpdated == true)
+	{	
+		switch (iInstrType)
+		{
+			case 0 : 
+				g_NKDExecVal = dContractExecs;
+				g_NKDExecQty = nContractPos;
+				break;
+			case 1 : 
+				g_NIYExecVal = dContractExecs;
+				g_NIYExecQty = nContractPos;
+				break;
+			case 2 : 
+				g_6JExecVal = dContractExecs;
+				g_6JExecQty = nContractPos;
+				break;
+			default:
+				break;
+		}
+	}
+}
+
+sprintf(szExecVal,"%.0f",g_NKDExecVal);
+TLB_Set_Property("valNKD", "label", szExecVal);
+
+sprintf(szExecQty,"[%d]",g_NKDExecQty);
+TLB_Set_Property("posNKD", "label", szExecQty);
+
+sprintf(szExecVal,"%.0f",g_NIYExecVal);
+TLB_Set_Property("valNIY", "label", szExecVal);
+
+sprintf(szExecQty,"[%d]",g_NIYExecQty);
+TLB_Set_Property("posNIY", "label", szExecQty);
+
+sprintf(szExecVal,"%.0f",g_6JExecVal);
+TLB_Set_Property("val6J", "label", szExecVal);
+
+sprintf(szExecQty,"[%d]",g_6JExecQty);
+TLB_Set_Property("pos6J", "label", szExecQty);
+
+return true;
+
+
+_END_FORM_ *****************************************

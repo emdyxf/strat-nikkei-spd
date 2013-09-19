@@ -1,0 +1,12 @@
+SA.SYMBOL GA.SYMBOL G.PORTFOLIO.SIDE
+EXEC_SHARES:9:int_com:gsum:No:honeydew2:navyblue:rank_n:DESCR
+UNR_PNL(1):9:int_com:gsum:No:honeydew2:navyblue:rank_n:DESCR
+LEAVES:9:int_com:gsum:No:slateblue:white:rank_n:DESCR
+AVG_PRICE:9:frac:gblank:No:slateblue:white:rank_n:DESCR
+REAL_PNL(1):9:int_com:gsum:No:slateblue:white:rank_n:DESCR
+LAST:9:frac:gblank:No:honeydew2:navyblue:rank_n:DESCR
+REAL_PNL(2):9:int_com:gsum:No:honeydew2:navyblue:rank_n:DESCR
+SIZE:9:mktsize:gblank:No:honeydew2:navyblue:rank_n:DESCR
+BID:9:frac:gblank:No:honeydew2:navyblue:rank_n:DESCR
+ASK:9:frac:gblank:No:honeydew2:navyblue:rank_n:DESCR
+UNR_PNL(2):9:prec2:gblank:No:honeydew2:navyblue:rank_n:DESCR

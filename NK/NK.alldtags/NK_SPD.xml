@@ -1,0 +1,698 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes" ?><flextrade>
+
+<broker name="Dialogs">
+	<strat CancelAnalytic="" SubmitAnalytic="" fixtag="0" height="187" name="BID_OFFER" refreshanalytic="" showbuttons="false" startupanalytic="BID_OFFER_DLG LOAD" width="734" x="193" y="324">
+		<param anchor="1" fixtag="0" isstring="false" name="lblOrdQtyLots" required="false" type="label" visible="true" x="315" y="61">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor>#FEFEFE</fgcolor>
+			<font>Sans 8</font>
+			<label>Ord Qty (lots)</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="ctlSpreadInterval" required="false" type="doublespin" visible="true" x="415" y="108">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font>Sans 8</font>
+			<default>1.000000</default>
+			<spintype>1.000000</spintype>
+			<min>1.000000</min>
+			<max>9999.000000</max>
+			<step>1.000000</step>
+			<decimal>0</decimal>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="ctlStageCount" required="false" type="doublespin" visible="true" x="415" y="81">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font>Sans 8</font>
+			<default>5.000000</default>
+			<spintype>1.000000</spintype>
+			<min>1.000000</min>
+			<max>9999.000000</max>
+			<step>1.000000</step>
+			<decimal>0</decimal>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="ctlBidBench" required="false" type="doublespin" visible="true" x="165" y="54">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font>Sans 8</font>
+			<default>0.100000</default>
+			<spintype>1.000000</spintype>
+			<min>-99999.000000</min>
+			<max>99999.000000</max>
+			<step>0.100000</step>
+			<decimal>2</decimal>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="lblMinus" required="false" type="label" visible="true" x="148" y="27">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font>Sans Bold 14</font>
+			<label>-</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="lblMinLotSize" required="false" type="label" visible="true" x="315" y="8">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor>#FEFEFE</fgcolor>
+			<font>Sans 8</font>
+			<label>Min Lot</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="lblPayUpTicks" required="false" type="label" visible="true" x="500" y="35">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor>#FEFEFE</fgcolor>
+			<font>Sans 8</font>
+			<label>PayUp Ticks</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="LotSizeQuote" required="false" type="label" visible="false" x="70" y="5">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor>#A52A2A</fgcolor>
+			<font>Sans 8</font>
+			<label>-</label>
+			<image></image>
+		</param>
+		<param anchor="0" fixtag="0" isstring="true" name="StratName" required="false" type="entry" visible="true" x="600" y="0">
+			<value></value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font>Sans 8</font>
+			<default></default>
+			<size>120</size>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="LotSizeHedge" required="false" type="label" visible="false" x="225" y="5">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor>#A52A2A</fgcolor>
+			<font>Sans 8</font>
+			<label>-</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="OrdQtyLots" required="false" type="label" visible="true" x="460" y="61">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor>#FEFEFE</fgcolor>
+			<font>Sans 8</font>
+			<label>1</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="MinLotSize" required="false" type="label" visible="true" x="460" y="8">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor>#FEFEFE</fgcolor>
+			<font>Sans 8</font>
+			<label>1</label>
+			<image></image>
+		</param>
+		<param AutoComplete="false" AutoCompleteBlockNonExisting="true" anchor="5" complete="true" fixtag="0" isstring="true" issymbol="false" name="symbolOption1" required="false" type="dropdown" visible="true" x="5" y="25">
+			<value></value>
+			<analytic>BID_OFFER_DLG EXPIRY</analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font>Sans 8</font>
+			<option alias="AG1307">AG1307</option>
+			<option alias="AG1308">AG1308</option>
+			<option alias="AG1309">AG1309</option>
+			<option alias="AG1310">AG1310</option>
+			<option alias="AG1311">AG1311</option>
+			<option alias="AG1312">AG1312</option>
+			<option alias="AG1401">AG1401</option>
+			<option alias="AG1402">AG1402</option>
+			<option alias="AG1403">AG1403</option>
+			<option alias="AG1404">AG1404</option>
+			<option alias="AG1405">AG1405</option>
+			<option alias="AG1406">AG1406</option>
+			<option alias="AG1407">AG1407</option>
+			<option alias="AG1408">AG1408</option>
+			<option alias="AG1409">AG1409</option>
+			<option alias="AG1410">AG1410</option>
+			<option alias="AG1411">AG1411</option>
+			<option alias="AG1412">AG1412</option>
+			<option alias="AG1501">AG1501</option>
+			<option alias="AG1502">AG1502</option>
+			<option alias="AG1503">AG1503</option>
+			<option alias="AG1504">AG1504</option>
+			<option alias="AG1505">AG1505</option>
+			<option alias="AG1506">AG1506</option>
+			<option alias="AG1507">AG1507</option>
+			<option alias="AG1508">AG1508</option>
+			<option alias="AG1509">AG1509</option>
+			<option alias="AG1510">AG1510</option>
+			<option alias="AG1511">AG1511</option>
+			<option alias="AG1512">AG1512</option>
+			<option alias="AU1307">AU1307</option>
+			<option alias="AU1308">AU1308</option>
+			<option alias="AU1309">AU1309</option>
+			<option alias="AU1310">AU1310</option>
+			<option alias="AU1311">AU1311</option>
+			<option alias="AU1312">AU1312</option>
+			<option alias="AU1401">AU1401</option>
+			<option alias="AU1402">AU1402</option>
+			<option alias="AU1403">AU1403</option>
+			<option alias="AU1404">AU1404</option>
+			<option alias="AU1405">AU1405</option>
+			<option alias="AU1406">AU1406</option>
+			<option alias="AU1407">AU1407</option>
+			<option alias="AU1408">AU1408</option>
+			<option alias="AU1409">AU1409</option>
+			<option alias="AU1410">AU1410</option>
+			<option alias="AU1411">AU1411</option>
+			<option alias="AU1412">AU1412</option>
+			<option alias="AU1501">AU1501</option>
+			<option alias="AU1502">AU1502</option>
+			<option alias="AU1503">AU1503</option>
+			<option alias="AU1504">AU1504</option>
+			<option alias="AU1505">AU1505</option>
+			<option alias="AU1506">AU1506</option>
+			<option alias="AU1507">AU1507</option>
+			<option alias="AU1508">AU1508</option>
+			<option alias="AU1509">AU1509</option>
+			<option alias="AU1510">AU1510</option>
+			<option alias="AU1511">AU1511</option>
+			<option alias="AU1512">AU1512</option>
+			<option alias="CU1307">CU1307</option>
+			<option alias="CU1308">CU1308</option>
+			<option alias="CU1309">CU1309</option>
+			<option alias="CU1310">CU1310</option>
+			<option alias="CU1311">CU1311</option>
+			<option alias="CU1312">CU1312</option>
+			<option alias="CU1401">CU1401</option>
+			<option alias="CU1402">CU1402</option>
+			<option alias="CU1403">CU1403</option>
+			<option alias="CU1404">CU1404</option>
+			<option alias="CU1405">CU1405</option>
+			<option alias="CU1406">CU1406</option>
+			<option alias="CU1407">CU1407</option>
+			<option alias="CU1408">CU1408</option>
+			<option alias="CU1409">CU1409</option>
+			<option alias="CU1410">CU1410</option>
+			<option alias="CU1411">CU1411</option>
+			<option alias="CU1412">CU1412</option>
+			<option alias="CU1501">CU1501</option>
+			<option alias="CU1502">CU1502</option>
+			<option alias="CU1503">CU1503</option>
+			<option alias="CU1504">CU1504</option>
+			<option alias="CU1505">CU1505</option>
+			<option alias="CU1506">CU1506</option>
+			<option alias="CU1507">CU1507</option>
+			<option alias="CU1508">CU1508</option>
+			<option alias="CU1509">CU1509</option>
+			<option alias="CU1510">CU1510</option>
+			<option alias="CU1511">CU1511</option>
+			<option alias="CU1512">CU1512</option>
+			<option alias="IF1307">IF1307</option>
+			<option alias="IF1308">IF1308</option>
+			<option alias="IF1309">IF1309</option>
+			<option alias="IF1310">IF1310</option>
+			<option alias="IF1311">IF1311</option>
+			<option alias="IF1312">IF1312</option>
+			<option alias="IF1401">IF1401</option>
+			<option alias="IF1402">IF1402</option>
+			<option alias="IF1403">IF1403</option>
+			<option alias="IF1404">IF1404</option>
+			<option alias="IF1405">IF1405</option>
+			<option alias="IF1406">IF1406</option>
+			<option alias="IF1407">IF1407</option>
+			<option alias="IF1408">IF1408</option>
+			<option alias="IF1409">IF1409</option>
+			<option alias="IF1410">IF1410</option>
+			<option alias="IF1411">IF1411</option>
+			<option alias="IF1412">IF1412</option>
+			<option alias="IF1501">IF1501</option>
+			<option alias="IF1502">IF1502</option>
+			<option alias="IF1503">IF1503</option>
+			<option alias="IF1504">IF1504</option>
+			<option alias="IF1505">IF1505</option>
+			<option alias="IF1506">IF1506</option>
+			<option alias="IF1507">IF1507</option>
+			<option alias="IF1508">IF1508</option>
+			<option alias="IF1509">IF1509</option>
+			<option alias="IF1510">IF1510</option>
+			<option alias="IF1511">IF1511</option>
+			<option alias="IF1512">IF1512</option>
+			<option alias="AU1----GOLD">AU1----GOLD</option>
+			<option alias="CU1--COPPER">CU1--COPPER</option>
+			<option alias="AG1--SILVER">AG1--SILVER</option>
+			<option alias="IF1--CSI300">IF1--CSI300</option>
+			<default>IF1312</default>
+		</param>
+		<param AutoComplete="false" AutoCompleteBlockNonExisting="true" anchor="8" complete="true" fixtag="0" isstring="true" issymbol="false" name="symbolOption2" required="false" type="dropdown" visible="true" x="165" y="25">
+			<value></value>
+			<analytic>BID_OFFER_DLG EXPIRY</analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font>Sans 8</font>
+			<option alias="AG1307">AG1307</option>
+			<option alias="AG1308">AG1308</option>
+			<option alias="AG1309">AG1309</option>
+			<option alias="AG1310">AG1310</option>
+			<option alias="AG1311">AG1311</option>
+			<option alias="AG1312">AG1312</option>
+			<option alias="AG1401">AG1401</option>
+			<option alias="AG1402">AG1402</option>
+			<option alias="AG1403">AG1403</option>
+			<option alias="AG1404">AG1404</option>
+			<option alias="AG1405">AG1405</option>
+			<option alias="AG1406">AG1406</option>
+			<option alias="AG1407">AG1407</option>
+			<option alias="AG1408">AG1408</option>
+			<option alias="AG1409">AG1409</option>
+			<option alias="AG1410">AG1410</option>
+			<option alias="AG1411">AG1411</option>
+			<option alias="AG1412">AG1412</option>
+			<option alias="AG1501">AG1501</option>
+			<option alias="AG1502">AG1502</option>
+			<option alias="AG1503">AG1503</option>
+			<option alias="AG1504">AG1504</option>
+			<option alias="AG1505">AG1505</option>
+			<option alias="AG1506">AG1506</option>
+			<option alias="AG1507">AG1507</option>
+			<option alias="AG1508">AG1508</option>
+			<option alias="AG1509">AG1509</option>
+			<option alias="AG1510">AG1510</option>
+			<option alias="AG1511">AG1511</option>
+			<option alias="AG1512">AG1512</option>
+			<option alias="AU1307">AU1307</option>
+			<option alias="AU1308">AU1308</option>
+			<option alias="AU1309">AU1309</option>
+			<option alias="AU1310">AU1310</option>
+			<option alias="AU1311">AU1311</option>
+			<option alias="AU1312">AU1312</option>
+			<option alias="AU1401">AU1401</option>
+			<option alias="AU1402">AU1402</option>
+			<option alias="AU1403">AU1403</option>
+			<option alias="AU1404">AU1404</option>
+			<option alias="AU1405">AU1405</option>
+			<option alias="AU1406">AU1406</option>
+			<option alias="AU1407">AU1407</option>
+			<option alias="AU1408">AU1408</option>
+			<option alias="AU1409">AU1409</option>
+			<option alias="AU1410">AU1410</option>
+			<option alias="AU1411">AU1411</option>
+			<option alias="AU1412">AU1412</option>
+			<option alias="AU1501">AU1501</option>
+			<option alias="AU1502">AU1502</option>
+			<option alias="AU1503">AU1503</option>
+			<option alias="AU1504">AU1504</option>
+			<option alias="AU1505">AU1505</option>
+			<option alias="AU1506">AU1506</option>
+			<option alias="AU1507">AU1507</option>
+			<option alias="AU1508">AU1508</option>
+			<option alias="AU1509">AU1509</option>
+			<option alias="AU1510">AU1510</option>
+			<option alias="AU1511">AU1511</option>
+			<option alias="AU1512">AU1512</option>
+			<option alias="CU1307">CU1307</option>
+			<option alias="CU1308">CU1308</option>
+			<option alias="CU1309">CU1309</option>
+			<option alias="CU1310">CU1310</option>
+			<option alias="CU1311">CU1311</option>
+			<option alias="CU1312">CU1312</option>
+			<option alias="CU1401">CU1401</option>
+			<option alias="CU1402">CU1402</option>
+			<option alias="CU1403">CU1403</option>
+			<option alias="CU1404">CU1404</option>
+			<option alias="CU1405">CU1405</option>
+			<option alias="CU1406">CU1406</option>
+			<option alias="CU1407">CU1407</option>
+			<option alias="CU1408">CU1408</option>
+			<option alias="CU1409">CU1409</option>
+			<option alias="CU1410">CU1410</option>
+			<option alias="CU1411">CU1411</option>
+			<option alias="CU1412">CU1412</option>
+			<option alias="CU1501">CU1501</option>
+			<option alias="CU1502">CU1502</option>
+			<option alias="CU1503">CU1503</option>
+			<option alias="CU1504">CU1504</option>
+			<option alias="CU1505">CU1505</option>
+			<option alias="CU1506">CU1506</option>
+			<option alias="CU1507">CU1507</option>
+			<option alias="CU1508">CU1508</option>
+			<option alias="CU1509">CU1509</option>
+			<option alias="CU1510">CU1510</option>
+			<option alias="CU1511">CU1511</option>
+			<option alias="CU1512">CU1512</option>
+			<option alias="IF1307">IF1307</option>
+			<option alias="IF1308">IF1308</option>
+			<option alias="IF1309">IF1309</option>
+			<option alias="IF1310">IF1310</option>
+			<option alias="IF1311">IF1311</option>
+			<option alias="IF1312">IF1312</option>
+			<option alias="IF1401">IF1401</option>
+			<option alias="IF1402">IF1402</option>
+			<option alias="IF1403">IF1403</option>
+			<option alias="IF1404">IF1404</option>
+			<option alias="IF1405">IF1405</option>
+			<option alias="IF1406">IF1406</option>
+			<option alias="IF1407">IF1407</option>
+			<option alias="IF1408">IF1408</option>
+			<option alias="IF1409">IF1409</option>
+			<option alias="IF1410">IF1410</option>
+			<option alias="IF1411">IF1411</option>
+			<option alias="IF1412">IF1412</option>
+			<option alias="IF1501">IF1501</option>
+			<option alias="IF1502">IF1502</option>
+			<option alias="IF1503">IF1503</option>
+			<option alias="IF1504">IF1504</option>
+			<option alias="IF1505">IF1505</option>
+			<option alias="IF1506">IF1506</option>
+			<option alias="IF1507">IF1507</option>
+			<option alias="IF1508">IF1508</option>
+			<option alias="IF1509">IF1509</option>
+			<option alias="IF1510">IF1510</option>
+			<option alias="IF1511">IF1511</option>
+			<option alias="IF1512">IF1512</option>
+			<option alias="AU1----GOLD">AU1----GOLD</option>
+			<option alias="CU1--COPPER">CU1--COPPER</option>
+			<option alias="AG1--SILVER">AG1--SILVER</option>
+			<option alias="IF1--CSI300">IF1--CSI300</option>
+			<default>IF1307</default>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="Refresh" required="false" type="pushbutton" visible="true" x="270" y="60">
+			<value>0.000000</value>
+			<analytic>BID_OFFER_DLG REFRESH</analytic>
+			<description></description>
+			<bgcolor>#FFA500</bgcolor>
+			<fgcolor>#000000</fgcolor>
+			<font>Sans 8</font>
+			<width>25</width>
+			<height>25</height>
+			<label></label>
+			<image>arrowUpDown.gif</image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="SymQuote" required="false" type="label" visible="false" x="60" y="5">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor>#A52A2A</fgcolor>
+			<font>Sans B 10</font>
+			<label>-</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="SymHedge" required="false" type="label" visible="false" x="215" y="5">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor>#A52A2A</fgcolor>
+			<font>Sans B 10</font>
+			<label>-</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="ctlOrdLot" required="false" type="doublespin" visible="true" x="415" y="27">
+			<value>0.000000</value>
+			<analytic>BID_OFFER_DLG QTY</analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font>Sans 8</font>
+			<default>2.000000</default>
+			<spintype>1.000000</spintype>
+			<min>1.000000</min>
+			<max>9999.000000</max>
+			<step>1.000000</step>
+			<decimal>0</decimal>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="lblOrdQty" required="false" type="label" visible="true" x="315" y="35">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor>#FEFEFE</fgcolor>
+			<font>Sans 8</font>
+			<label>Ord Size</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="Separator6" required="false" type="separator" visible="true" x="305" y="2">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font></font>
+			<vertical>true</vertical>
+			<length>135</length>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="lblStratName" required="false" type="label" visible="true" x="500" y="8">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor>#FEFEFE</fgcolor>
+			<font>Sans 8</font>
+			<label>Strat Name</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="lblBidSpread" required="false" type="label" visible="true" x="80" y="61">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font>Sans 8</font>
+			<label>Bid Spread</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="lblOfferSpread" required="false" type="label" visible="true" x="80" y="88">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font></font>
+			<label>Offer Spread</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="lblQuoteSym" required="false" type="label" visible="true" x="5" y="5">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font></font>
+			<label>QUOTE</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="lblHedgeSym" required="false" type="label" visible="true" x="165" y="5">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font></font>
+			<label>HEDGE</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="ctlOfferBench" required="false" type="doublespin" visible="true" x="165" y="81">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font>Sans 8</font>
+			<default>0.100000</default>
+			<spintype>1.000000</spintype>
+			<min>-99999.000000</min>
+			<max>99999.000000</max>
+			<step>0.100000</step>
+			<decimal>2</decimal>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="lblStageCount" required="false" type="label" visible="true" x="315" y="88">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor>#FEFEFE</fgcolor>
+			<font>Sans 8</font>
+			<label>Stage Count</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="lblSpreadInterval" required="false" type="label" visible="true" x="315" y="114">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor>#FEFEFE</fgcolor>
+			<font>Sans 8</font>
+			<label>Spread Interval</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="ctlPayUpTicks" required="false" type="doublespin" visible="true" x="600" y="27">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font>Sans 8</font>
+			<default>0.000000</default>
+			<spintype>1.000000</spintype>
+			<min>0.000000</min>
+			<max>100.000000</max>
+			<step>1.000000</step>
+			<decimal>0</decimal>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="lblMaxRpl" required="false" type="label" visible="true" x="500" y="61">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor>#FEFEFE</fgcolor>
+			<font>Sans 8</font>
+			<label>Max Replace</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="cltMaxRpl" required="false" type="doublespin" visible="true" x="600" y="54">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font>Sans 8</font>
+			<default>0.000000</default>
+			<spintype>1.000000</spintype>
+			<min>0.000000</min>
+			<max>500.000000</max>
+			<step>1.000000</step>
+			<decimal>0</decimal>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="lblMaxPos" required="false" type="label" visible="true" x="500" y="88">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor>#FEFEFE</fgcolor>
+			<font>Sans 8</font>
+			<label>Max Position</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="ctlMaxPos" required="false" type="doublespin" visible="true" x="600" y="81">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font>Sans 8</font>
+			<default>20.000000</default>
+			<spintype>1.000000</spintype>
+			<min>1.000000</min>
+			<max>999999.000000</max>
+			<step>1.000000</step>
+			<decimal>0</decimal>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="lblMaxLoss" required="false" type="label" visible="true" x="500" y="114">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor>#FEFEFE</fgcolor>
+			<font>Sans 8</font>
+			<label>Max Loss</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="ctlMaxLoss" required="false" type="doublespin" visible="true" x="600" y="108">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font>Sans 8</font>
+			<default>1000.000000</default>
+			<spintype>1.000000</spintype>
+			<min>0.010000</min>
+			<max>999999999.000000</max>
+			<step>0.010000</step>
+			<decimal>2</decimal>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="btnOK" required="false" type="pushbutton" visible="true" x="200" y="155">
+			<value>0.000000</value>
+			<analytic>BID_OFFER_DLG CONFIRM</analytic>
+			<description></description>
+			<bgcolor>#90EE90</bgcolor>
+			<fgcolor>#262626</fgcolor>
+			<font>Sans Bold 9</font>
+			<width>80</width>
+			<height>25</height>
+			<label>OK</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="Separator2" required="false" type="separator" visible="true" x="5" y="141">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font></font>
+			<vertical>false</vertical>
+			<length>720</length>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="btnCANCEL" required="false" type="pushbutton" visible="true" x="440" y="155">
+			<value>0.000000</value>
+			<analytic>BID_OFFER_DLG cancel</analytic>
+			<description></description>
+			<bgcolor>#FFC0CB</bgcolor>
+			<fgcolor>#262626</fgcolor>
+			<font>Sans Bold 9</font>
+			<width>80</width>
+			<height>25</height>
+			<label>CANCEL</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="lblQuoteMode" required="false" type="label" visible="true" x="80" y="114">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font></font>
+			<label>Quote Mode</label>
+			<image></image>
+		</param>
+		<param AutoComplete="false" AutoCompleteBlockNonExisting="false" anchor="5" complete="false" fixtag="0" isstring="true" issymbol="false" name="ctlQuoteMode" required="false" type="dropdown" visible="true" x="165" y="108">
+			<value></value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font></font>
+			<option alias="Always">Always</option>
+			<option alias="Conditional">Conditional</option>
+			<option alias="Aggressive">Aggressive</option>
+			<default>Conditional</default>
+		</param>
+	</strat>
+</broker>
+
+</flextrade>

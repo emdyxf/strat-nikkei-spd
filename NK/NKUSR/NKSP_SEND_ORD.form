@@ -1,0 +1,62 @@
+_STRT_NEW_FORM_ 1 NKSP_SEND_ORD 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:NKSP_SEND_ORD
+/***************************************************
+NKSP Strat Rule. Send out one buy client order and one sell client order
+**************************************************/
+
+if(ACKS_PENDING || BUY_LEAVES || SELL_LEAVES)
+{
+	if(ACKS_PENDING)
+	{
+		Pop_Msg1("ACKS_PENDING");
+	}
+	else if(BUY_LEAVES)
+	{
+		Pop_Msg1("BUY_LEAVES");
+	}
+	else
+	{
+		Pop_Msg1("SELL_LEAVES");	
+	}
+	return false;
+}	
+
+int nTotalOrdQty = (int)Value_Cell_Else("NKSP_TOTALQTY", 0);
+
+Set_Order_Shares(nTotalOrdQty);
+
+int nStratId = (int) Value_Cell_Else("NKSP_STRATID", 0);
+
+Set_Column_Value_Save("NKSP_RUNNING", 1);
+
+FTStr szOrdSide;
+Get_Column_Str("NKSP_SIDE", szOrdSide.str());
+
+if (!strcmp(szOrdSide.str(), "BUY"))
+{
+	Set_Order_Side_Buy();
+}
+else if (!strcmp(szOrdSide.str(), "SELL"))
+{
+	Set_Order_Side_Sell();
+}
+else
+{
+	Pop_Msg1("Invalid Side!");
+	return false;
+}
+
+double dBench = Value_Cell_Else("NKSP_BENCH", g_dEpsilon/10.0);
+
+if (fabs(dBench) < g_dEpsilon) {	dBench = g_dEpsilon;	}
+
+if(dBench < -g_dEpsilon)	{	Set_Order_Price(-dBench);	}
+else						{	Set_Order_Price(dBench);	}
+
+Pop_Msg1("NKSP_SEND_ORD!");
+
+Auto_Send_Order(NO_CONFIRM, nStratId);
+
+return true;
+
+
+_END_FORM_ *****************************************

@@ -1,0 +1,11 @@
+_STRT_NEW_FORM_ 1 SS_CTL_PORT 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:SS_CTL_PORT
+/******************************************************************
+SS Rule. Centers all ladders from a button in L2 screen
+******************************************************************/
+
+RunRuleOnSymPort(SS_CTL,NULL,PORTFOLIO);
+
+return true;
+
+
+_END_FORM_ *****************************************

@@ -1,0 +1,22 @@
+_STRT_NEW_FORM_ 1 FILTER_MAIN_SCREEN 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:FILTER_MAIN_SCREEN
+char szParam[32] = "";
+Get_param_str(szParam,0);
+Set_param_str("",0);
+
+if(!strcmp(szParam,"SPREADS"))
+{
+        static bool bEnabled = false;
+        if(bEnabled)
+                {       Run_Cmd("menu rf");     bEnabled = false;       }
+        else
+                {       Run_Cmd("filtn NKSP_STRAT_IND = 1"); bEnabled = true;       }
+}
+
+Filter_String("ASSIGN_TRDR",TraderName());
+
+FilterOinfo(NULL,NULL,"-");
+
+return 1;
+
+
+_END_FORM_ *****************************************

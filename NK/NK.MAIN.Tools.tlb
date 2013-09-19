@@ -1,0 +1,234 @@
+widget:label
+Name:NK_SPD
+Label:~||
+script:
+foreground:#BDDFFF
+background:#292929
+__END__
+__EndCfg
+widget:button
+Name:TlbBtnCreateStrategy
+Label:~ ADD 
+script:o SHOW_DIALOG NK_SPD ADD
+foreground:#FFFFFF
+background:#344FAE
+__END__
+__EndCfg
+widget:button
+Name:TlbBtnEditStrategy
+Label:~ EDIT 
+script:o SHOW_DIALOG NK_SPD EDIT
+foreground:#FFFFFF
+background:#344FAE
+__END__
+__EndCfg
+widget:label
+Name:
+Label:~|
+script:
+foreground:#ECECEC
+background:#292929
+__END__
+__EndCfg
+widget:button
+Name:TlbBtnCancelStrategy
+Label:~ CXL 
+script:o NKSP_STRAT_CONTROL CANCEL
+foreground:#FFFFFF
+background:#9B302E
+__END__
+__EndCfg
+widget:label
+Name:
+Label:~|
+script:
+foreground:#ECECEC
+background:#292929
+__END__
+__EndCfg
+widget:button
+Name:TlbBtnStart
+Label:Icons/play.png~
+script:o NKSP_STRAT_CONTROL START
+foreground:#FFFFFF
+background:#C4E5D0
+__END__
+__EndCfg
+widget:button
+Name:TlbBtnStopOne
+Label:Icons/stop.png~
+script:o NKSP_STRAT_CONTROL STOP
+foreground:#FFFFFF
+background:#F6E3E3
+__END__
+__EndCfg
+widget:label
+Name:
+Label:~|
+script:
+foreground:#ECECEC
+background:#292929
+__END__
+__EndCfg
+widget:button
+Name:TlbBtnStopAll
+Label:Icons/stop_all.png~
+script:o NKSP_STRAT_CONTROL CANCELALL
+foreground:#FFFFFF
+background:#FFD7BE
+__END__
+__EndCfg
+widget:label
+Name:
+Label:~|
+script:
+foreground:#ECECEC
+background:#292929
+__END__
+__EndCfg
+widget:button
+Name:tlbBtnLadder
+Label:Icons/ladder.png~
+script:o L2_LAUNCH
+foreground:#FFFFFF
+background:#BFBFBF
+__END__
+__EndCfg
+widget:label
+Name:
+Label:~|
+script:
+foreground:#ECECEC
+background:#292929
+__END__
+__EndCfg
+widget:button
+Name:tlbBtnParams
+Label:~ STRAT 
+script:col PORTFOLIO
+foreground:#FFFFFF
+background:#5C775A
+__END__
+__EndCfg
+widget:button
+Name:TlbHomeBtn
+Label:~ EXECS 
+script:col NKSP_PORT
+foreground:#FFFFFF
+background:#5C775A
+__END__
+__EndCfg
+widget:button
+Name:tlbBtnMarket
+Label:~ MKT 
+script:col BID
+foreground:#FFFFFF
+background:#65585B
+__END__
+__EndCfg
+widget:label
+Name:
+Label:~|
+script:
+foreground:#FFFFFF
+background:#292929
+__END__
+__EndCfg
+widget:button
+Name:tlbBtnFilter
+Label:Icons/filter.png~
+script:o FILTER_MAIN_SCREEN SPREADS
+foreground:#FFFFFF
+background:#F2E4EA
+__END__
+__EndCfg
+widget:label
+Name:lblNKD
+Label:~| NKD:
+script:
+foreground:#FFFFFF
+background:#292929
+__END__
+__EndCfg
+widget:label
+Name:posNKD
+Label:~[0]
+script:
+foreground:#FFFFFF
+background:#292929
+__END__
+__EndCfg
+widget:label
+Name:valNKD
+Label:~0
+script:
+foreground:#FFFFFF
+background:#292929
+__END__
+__EndCfg
+widget:label
+Name:lblNIY
+Label:~ | NIY: 
+script:
+foreground:#FFFFFF
+background:#292929
+__END__
+__EndCfg
+widget:label
+Name:posNIY
+Label:~[0]
+script:
+foreground:#FFFFFF
+background:#292929
+__END__
+__EndCfg
+widget:label
+Name:valNIY
+Label:~0
+script:
+foreground:#FFFFFF
+background:#292929
+__END__
+__EndCfg
+widget:label
+Name:lbl6J
+Label:~ | 6J: 
+script:
+foreground:#FFFFFF
+background:#292929
+__END__
+__EndCfg
+widget:label
+Name:pos6J
+Label:~[0]
+script:
+foreground:#FFFFFF
+background:#292929
+__END__
+__EndCfg
+widget:label
+Name:val6J
+Label:~0
+script:
+foreground:#FFFFFF
+background:#292929
+__END__
+__EndCfg
+widget:label
+Name:lblCMD
+Label:~ || CMD :
+script:
+foreground:#FFFFFF
+background:#292929
+__END__
+__EndCfg
+widget:entry
+Name:CMD
+Label:
+script:o RUN_CMD
+foreground:#000000
+background:#F0FFFF
+__END__
+width:18
+value:
+__EndCfg

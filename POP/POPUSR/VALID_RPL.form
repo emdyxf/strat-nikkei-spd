@@ -1,0 +1,54 @@
+_STRT_NEW_FORM_ 1 VALID_RPL 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:VALID_RPL
+/******************************************************************
+Reserved Rule. Runs before sending out replace order.
+******************************************************************/
+char strDebug[216]="";
+char strRule[20]="VALID_RPL";
+
+FTStr sTrdAcct;
+sTrdAcct = GlobalStr("TRD_ACCT");
+
+/*
+if (strstr(PORTFOLIO, FLEX_OMRULE_NKSPD)) // If PORTFOLIO contains FLEX_OMRULE_NKSP -> Send Nikkei Spread Strat order to OMRule Loopback
+{
+	Pop_Msg1("VALID_RPL : Algo!");
+
+} // ENDIF: Replacing a Strat-Order
+else // If NO FLEX_OMRULE_NKSP -> Replace 
+{	
+*/
+
+FT_ORDER_INFO oinfo;
+int num_orders = 0;
+char szMemo[64]="";	
+FTStr szMsg;
+
+num_orders = Get_Active_Orders(oinfo);
+if (num_orders>0)
+{
+	szMsg="Ladder RPL: Order ID=";szMsg+=oinfo.OrderId(0);
+	szMsg+=" WaveName=";szMsg+=oinfo.WaveName(0);
+	szMsg+=" Memo=";szMsg+=oinfo.OrdMemo(0);
+	szMsg+=" AppClientId="; szMsg+=oinfo.AppClientId(0);
+	szMsg+=" ClientId=";oinfo.ClientId(0);
+	Pop_Msg1(szMsg);
+
+	strcpy(szMemo, oinfo.OrdMemo(0));
+}
+	
+Set_Send_Order_Wave(Get_Order_Wave());
+
+Set_Send_Order_Memo(Get_Order_Memo());
+
+SS_Run_Script("LEVEL2","unselect");
+	
+/*	
+}
+*/
+
+Set_Send_Order_Acct(sTrdAcct.str());
+
+return true;
+
+
+_END_FORM_ *****************************************

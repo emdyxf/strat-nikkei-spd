@@ -1,0 +1,169 @@
+_STRT_NEW_FORM_ 1 NKSP_STRAT_HANDLE 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:NKSP_STRAT_HANDLE
+/***************************************************
+NKSP Strat Rule. Perform Parameters checks. And:
+- If Instruction="START", send out new client orders to start strategy
+- If Instruction="STOP", send out replace client orders to stop strategy
+- If Instruction="RESTART", send out replace client orders to restart strategy
+- If Instruction="CANCEL", send out cancel client orders to cancel strategy
+**************************************************/
+
+FTStr szPortPassed;
+FTStr szInstruction;
+
+Get_param_str(szPortPassed.str(),0);
+Set_param_str("",0);
+
+Get_param_str(szInstruction.str(),1);
+Set_param_str("",1);
+
+Pop_Msg(szPortPassed);
+Pop_Msg(szInstruction);
+
+FlexAppRules::RowInfoArray aRows;
+MainGetRows(NULL, szPortPassed, aRows);
+
+// STEP 1 : First check if all parameters are in place
+static ColumnInfo clNkspLeg("NKSP_LEG"), clNkspStatus("NKSP_STATUS"), clNkspPort("NKSP_PORT"), clStratId("NKSP_STRATID");
+static ColumnInfo clNkspOrdLot("NKSP_ORDQTY"), clNkspTotalLot("NKSP_TOTALQTY"), clNkspPayupTick("NKSP_PAYUPTICK"), clNkspSide("NKSP_SIDE");
+
+FlexAppRules::RowInfo QuoteRow, HedgeRow;
+FTStr szTemp1, szTemp2;
+double dTemp1,dTemp2;
+
+aRows[0].GetCellValue(clNkspLeg, szTemp1);
+if(!strcmp(szTemp1.str(), LEG_QUOTE))
+{
+	QuoteRow = aRows[0];
+	HedgeRow = aRows[1];
+}
+else
+{
+	QuoteRow = aRows[1];
+	HedgeRow = aRows[0];
+}
+
+// Check symbol	
+szTemp1 = QuoteRow.GetSymbol();
+szTemp2 = HedgeRow.GetSymbol();
+if (!strlen(szTemp1.str()) || !strlen(szTemp2.str()))
+{
+	Pop_Msg_Color("Missing Strat symbols. Cannot start strategy!",0,"red","black");
+	return true;
+}
+
+// Check StratID
+dTemp1 = QuoteRow.GetCellValue(clStratId, 0.0);
+dTemp2 = HedgeRow.GetCellValue(clStratId, 0.0);
+if (int(dTemp1) <= 0 || int(dTemp2) <=0 )
+{
+	Pop_Msg_Color("Invalid Strat ID. Cannot start strategy!",0,"red","black");
+	return true;
+}
+else if (int(dTemp1) != int(dTemp2))
+{
+	Pop_Msg_Color("Strat ID mis-match. Cannot start strategy!",0,"red","black");
+	return true;
+}
+
+// Check Ord Qty
+dTemp1 = QuoteRow.GetCellValue(clNkspOrdLot, 0.0);
+dTemp2 = HedgeRow.GetCellValue(clNkspOrdLot, 0.0);
+if (int(dTemp1) <= 0 || int(dTemp2) <=0 )
+{
+	Pop_Msg_Color("Invalid Order Lot. Cannot start strategy!",0,"red","black");
+	return true;
+}
+else if (int(dTemp1) != int(dTemp2))
+{
+	Pop_Msg_Color("Order Lot mis-match. Cannot start strategy!",0,"red","black");
+	return true;
+}
+
+// Check PayUp Tick
+dTemp1 = QuoteRow.GetCellValue(clNkspPayupTick, 0.0);
+dTemp2 = HedgeRow.GetCellValue(clNkspPayupTick, 0.0);
+if (int(dTemp1) < 0 || int(dTemp2) < 0 )
+{
+	Pop_Msg_Color("Invalid PayUp Tick. Cannot start strategy!",0,"red","black");
+	return true;
+}
+else if (int(dTemp1) != int(dTemp2))
+{
+	Pop_Msg_Color("PayUp Tick mis-match. Cannot start strategy!",0,"red","black");
+	return true;
+}
+
+//Check Side
+QuoteRow.GetCellValue(clNkspSide, szTemp1);
+HedgeRow.GetCellValue(clNkspSide, szTemp2);
+if (!strlen(szTemp1.str()) || !strlen(szTemp2.str()))
+{
+	Pop_Msg_Color("Invalid Strat Sides. Cannot start strategy!",0,"red","black");
+	return true;
+}
+else if (!strcmp(szTemp1.str(), szTemp2.str()))
+{
+	Pop_Msg_Color("Strat Sides mis-match. Cannot start strategy!",0,"red","black");
+	return true;
+}
+
+// Check Strat Port
+QuoteRow.GetCellValue(clNkspPort, szTemp1);
+HedgeRow.GetCellValue(clNkspPort, szTemp2);
+if (!strlen(szTemp1.str()) || !strlen(szTemp2.str()))
+{
+	Pop_Msg_Color("Missing Strat portfolio. Cannot start strategy!",0,"red","black");
+	return true;
+}
+else if (strcmp(szTemp1.str(), szTemp2.str()))
+{
+	Pop_Msg_Color("Strat portfolio mis-match. Cannot start strategy!",0,"red","black");
+	return true;
+}
+
+szTemp1=""; szTemp1="StratPort [";szTemp1+=szTemp2;szTemp1+="] : All Checks Passed. Handle Strategy Orders!";
+Pop_Msg_Color(szTemp1,0,"green","black");
+
+// STEP 2:  Check of instructions
+bool bAutoEnabled = Is_Auto_Enabled();
+if(!bAutoEnabled)
+	Enable_Auto_Trade();
+
+if (!strcmp(szInstruction.str(),"START"))
+{
+	if(QuoteRow.Run(FLEXRULE(NKSP_SEND_ORD)))	{	QuoteRow.SetCellValue(clNkspStatus, STRAT_STATUS_WORKING, true);	}
+	if(HedgeRow.Run(FLEXRULE(NKSP_SEND_ORD)))	{	HedgeRow.SetCellValue(clNkspStatus, STRAT_STATUS_WORKING, true);	}
+}
+
+else if (!strcmp(szInstruction.str(),"STOP"))
+{
+	Pop_Msg1(szInstruction);
+	Set_param_str("",0);	
+	Set_param_str(szInstruction.str(),0);
+	if(QuoteRow.Run(FLEXRULE(NKSP_SEND_RPL)))	{	QuoteRow.SetCellValue(clNkspStatus, START_STATUS_PAUSE, true);	}
+	Set_param_str("",0);
+	Set_param_str(szInstruction.str(),0);
+	if(HedgeRow.Run(FLEXRULE(NKSP_SEND_RPL)))	{	HedgeRow.SetCellValue(clNkspStatus, START_STATUS_PAUSE, true);	}
+	Set_param_str("",0);
+}
+else if (!strcmp(szInstruction.str(),"RESTART"))
+{
+	Pop_Msg1(szInstruction);
+	Set_param_str("",0);	
+	Set_param_str(szInstruction.str(),0);
+	if(QuoteRow.Run(FLEXRULE(NKSP_SEND_RPL)))	{	QuoteRow.SetCellValue(clNkspStatus, STRAT_STATUS_WORKING, true);	}
+	Set_param_str("",0);	
+	Set_param_str(szInstruction.str(),0);
+	if(HedgeRow.Run(FLEXRULE(NKSP_SEND_RPL)))	{	HedgeRow.SetCellValue(clNkspStatus, STRAT_STATUS_WORKING, true);	}
+	Set_param_str("",0);
+}
+else if (!strcmp(szInstruction.str(),"CANCEL"))
+{
+	if(QuoteRow.Run(FLEXRULE(NKSP_SEND_CXL)))	{	QuoteRow.SetCellValue(clNkspStatus, STRAT_STATUS_CXLD, true);	}
+	if(HedgeRow.Run(FLEXRULE(NKSP_SEND_CXL)))	{	HedgeRow.SetCellValue(clNkspStatus, STRAT_STATUS_CXLD, true);	}
+}
+
+return true;
+
+
+_END_FORM_ *****************************************

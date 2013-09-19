@@ -1,0 +1,28 @@
+_STRT_NEW_FORM_ 1 STATIC_COLUMNS 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:STATIC_COLUMNS
+char szInstrument[64]=""; 
+
+Pop_Msg1(SYM);
+
+enCMInstrType eInstrType = GetInstrType(SYM);
+
+switch(eInstrType)
+{
+	case enNikkeiUSD:
+		strcpy(szInstrument, "Nikkei - USD");
+		break;
+	case enNikkeiYEN:
+		strcpy(szInstrument, "Nikkei - YEN");
+		break;
+	case enYENUSD:
+		strcpy(szInstrument, "YEN/USD");
+		break;
+	default:
+		break;
+}
+
+Set_Column_Str("INSTRUMENT", szInstrument);
+Set_Column_Value("INSTR_TYPE", eInstrType);
+return 1;
+
+
+_END_FORM_ *****************************************

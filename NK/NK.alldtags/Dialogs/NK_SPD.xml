@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes" ?><flextrade>
+
+<broker name="Dialogs">
+	<strat CancelAnalytic="" SubmitAnalytic="" fixtag="0" height="202" name="NK_SPD" refreshanalytic="" showbuttons="false" startupanalytic="NK_SPD_DLG LOAD" width="564" x="332" y="313">
+		<param anchor="1" fixtag="0" isstring="false" name="lblOrdQtyLots" required="false" type="label" visible="true" x="360" y="55">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor>#FEFEFE</fgcolor>
+			<font>Sans 8</font>
+			<label>Total Lot</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="lblPayUpTicks" required="false" type="label" visible="true" x="360" y="80">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor>#FEFEFE</fgcolor>
+			<font>Sans 8</font>
+			<label>PayUp Ticks</label>
+			<image></image>
+		</param>
+		<param anchor="0" fixtag="0" isstring="true" name="StratName" required="false" type="entry" visible="true" x="470" y="1">
+			<value></value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font>Sans 8</font>
+			<default></default>
+			<size>90</size>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="Refresh" required="false" type="pushbutton" visible="true" x="305" y="3">
+			<value>0.000000</value>
+			<analytic>NK_SPD_DLG REFRESH</analytic>
+			<description></description>
+			<bgcolor>#FFA500</bgcolor>
+			<fgcolor>#000000</fgcolor>
+			<font>Sans 8</font>
+			<width>25</width>
+			<height>25</height>
+			<label></label>
+			<image>arrowUpDown.gif</image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="lblOrdQty" required="false" type="label" visible="true" x="360" y="30">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor>#FEFEFE</fgcolor>
+			<font>Sans 8</font>
+			<label>Ord Lot</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="Separator6" required="false" type="separator" visible="true" x="345" y="5">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor>#5A5A5A</bgcolor>
+			<fgcolor></fgcolor>
+			<font></font>
+			<vertical>true</vertical>
+			<length>135</length>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="lblStratName" required="false" type="label" visible="true" x="360" y="5">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor>#FEFEFE</fgcolor>
+			<font>Sans 8</font>
+			<label>Strat Name</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="lblQuoteSym" required="false" type="label" visible="true" x="100" y="75">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font></font>
+			<label>QUOTE</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="lblHedgeSym" required="false" type="label" visible="true" x="100" y="115">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font></font>
+			<label>HEDGE</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="ctlPayUpTicks" required="false" type="doublespin" visible="true" x="470" y="79">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font>Sans 8</font>
+			<default>0.000000</default>
+			<spintype>1.000000</spintype>
+			<min>0.000000</min>
+			<max>10000.000000</max>
+			<step>1.000000</step>
+			<decimal>0</decimal>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="btnOK" required="false" type="pushbutton" visible="true" x="395" y="165">
+			<value>0.000000</value>
+			<analytic>NK_SPD_DLG CONFIRM</analytic>
+			<description></description>
+			<bgcolor>#90EE90</bgcolor>
+			<fgcolor>#262626</fgcolor>
+			<font>Sans Bold 9</font>
+			<width>80</width>
+			<height>25</height>
+			<label>OK</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="Separator2" required="false" type="separator" visible="true" x="0" y="150">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor>#6D6D6D</bgcolor>
+			<fgcolor></fgcolor>
+			<font></font>
+			<vertical>false</vertical>
+			<length>555</length>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="btnCANCEL" required="false" type="pushbutton" visible="true" x="135" y="165">
+			<value>0.000000</value>
+			<analytic>NK_SPD_DLG cancel</analytic>
+			<description></description>
+			<bgcolor>#FFC0CB</bgcolor>
+			<fgcolor>#262626</fgcolor>
+			<font>Sans Bold 9</font>
+			<width>80</width>
+			<height>25</height>
+			<label>CANCEL</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="lblMktSpdSide" required="false" type="label" visible="true" x="15" y="5">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font></font>
+			<label>Bid Spread</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="lblSpdBid" required="false" type="label" visible="true" x="120" y="5">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font></font>
+			<label>BID</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="lblSpdLast" required="false" type="label" visible="true" x="180" y="5">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font></font>
+			<label>LAST</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="lblSpdAsk" required="false" type="label" visible="true" x="240" y="5">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font></font>
+			<label>ASK</label>
+			<image></image>
+		</param>
+		<param AutoComplete="false" AutoCompleteBlockNonExisting="false" anchor="5" complete="false" fixtag="0" isstring="true" issymbol="false" name="optQuoteSide" required="false" type="dropdown" visible="true" x="10" y="70">
+			<value></value>
+			<analytic>NK_SPD_DLG QSIDE</analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font></font>
+			<option alias="BUY">BUY</option>
+			<option alias="SELL">SELL</option>
+			<default>BUY</default>
+		</param>
+		<param AutoComplete="false" AutoCompleteBlockNonExisting="false" anchor="5" complete="false" fixtag="0" isstring="true" issymbol="false" name="optHedgeSide" required="false" type="dropdown" visible="true" x="10" y="105">
+			<value></value>
+			<analytic>NK_SPD_DLG HSIDE</analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font></font>
+			<option alias="SELL">SELL</option>
+			<option alias="BUY">BUY</option>
+			<default>BUY</default>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="symQuote" required="false" type="label" visible="true" x="165" y="75">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font></font>
+			<label>---</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="symHedge" required="false" type="label" visible="true" x="165" y="115">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font></font>
+			<label>---</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="lblQuoteMktSide" required="false" type="label" visible="true" x="240" y="75">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font></font>
+			<label>Bid</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="lblHedgeMktSide" required="false" type="label" visible="true" x="240" y="115">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font></font>
+			<label>Bid</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="lblQuoteMktData" required="false" type="label" visible="true" x="290" y="73">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font>Sans 10</font>
+			<label>-</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="lblHedgeMktData" required="false" type="label" visible="true" x="290" y="112">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font>Sans 10</font>
+			<label>-</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="mdBidSpd" required="false" type="label" visible="true" x="110" y="35">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font>Sans Bold 9</font>
+			<label>-</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="mdLastSpd" required="false" type="label" visible="true" x="170" y="35">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font>Sans Bold 9</font>
+			<label>-</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="mdAskSpd" required="false" type="label" visible="true" x="230" y="35">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font>Sans Bold 9</font>
+			<label>-</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="ctlTotaQty" required="false" type="doublespin" visible="true" x="470" y="54">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font></font>
+			<default>1.000000</default>
+			<spintype>1.000000</spintype>
+			<min>1.000000</min>
+			<max>10000.000000</max>
+			<step>1.000000</step>
+			<decimal>0</decimal>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="Benchmark" required="false" type="label" visible="true" x="430" y="115">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font>Sans Bold 11</font>
+			<label>-</label>
+			<image></image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="btnIncrease" required="false" type="pushbutton" visible="true" x="470" y="110">
+			<value>0.000000</value>
+			<analytic>NK_SPD_DLG UP</analytic>
+			<description></description>
+			<bgcolor>#1E90FF</bgcolor>
+			<fgcolor>#0000FF</fgcolor>
+			<font></font>
+			<width>25</width>
+			<height>25</height>
+			<label></label>
+			<image>arrowUp.gif</image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="btnDecrease" required="false" type="pushbutton" visible="true" x="380" y="110">
+			<value>0.000000</value>
+			<analytic>NK_SPD_DLG DOWN</analytic>
+			<description></description>
+			<bgcolor>#FF0000</bgcolor>
+			<fgcolor></fgcolor>
+			<font></font>
+			<width>25</width>
+			<height>25</height>
+			<label></label>
+			<image>arrowDown.gif</image>
+		</param>
+		<param anchor="5" fixtag="0" isstring="false" name="ctlOrdQty" required="false" type="doublespin" visible="true" x="470" y="27">
+			<value>0.000000</value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font></font>
+			<default>1.000000</default>
+			<spintype>1.000000</spintype>
+			<min>1.000000</min>
+			<max>10000.000000</max>
+			<step>1.000000</step>
+			<decimal>0</decimal>
+		</param>
+		<param AutoComplete="false" AutoCompleteBlockNonExisting="false" anchor="5" complete="false" fixtag="0" isstring="true" issymbol="false" name="optMode" required="false" type="dropdown" visible="true" x="9" y="32">
+			<value></value>
+			<analytic></analytic>
+			<description></description>
+			<bgcolor></bgcolor>
+			<fgcolor></fgcolor>
+			<font></font>
+			<option alias="Always">Always</option>
+			<option alias="Silent">Silent</option>
+			<default>Silent</default>
+		</param>
+	</strat>
+</broker>
+
+</flextrade>

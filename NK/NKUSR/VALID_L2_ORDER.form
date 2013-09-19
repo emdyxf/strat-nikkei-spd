@@ -1,0 +1,9 @@
+_STRT_NEW_FORM_ 1 VALID_L2_ORDER 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:VALID_L2_ORDER
+/******************************************************************
+Reserved Rule. Runs when bringing up a ladder screen
+******************************************************************/
+
+return true;
+
+
+_END_FORM_ *****************************************

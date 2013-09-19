@@ -1,0 +1,11 @@
+_STRT_NEW_FORM_ 1 SS_LAYOUT 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:SS_LAYOUT
+/******************************************************************
+SS Rule. Load Outright Ladder
+******************************************************************/
+
+RunRule(SS_LAYOUT_DEF);
+
+return true;
+
+
+_END_FORM_ *****************************************

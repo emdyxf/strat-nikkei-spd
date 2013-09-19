@@ -1,0 +1,98 @@
+_STRT_NEW_FORM_ 1 SHOW_DIALOG 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:SHOW_DIALOG
+char szParam0[32] = "";
+char szParam1[32] = "";
+
+Get_param_str(szParam0, 0);
+Get_param_str(szParam1, 1);
+
+if(szParam0[0] == 'N' && szParam1[0] == 'A') //NK_SPD ADD
+{
+	FlexAppRules::RowInfoArray selRows;
+	FTStr szQuoteSym;
+
+	int nRows = MainGetSelectedRows(selRows);
+	if (nRows!=1)
+	{
+		MsgBox("SPREADER ADD", "Please select ONE contract to quote", 'E');
+		return false;
+	}
+	
+	szQuoteSym = selRows[0].GetSymbol();	
+	if (!(strstr(szQuoteSym.str(),"NKD") || strstr(szQuoteSym.str(),"NIY")))
+	{	
+		MsgBox("SPREADER ADD", "Please select a Nikkei contract to quote", 'E');
+		return true;
+	}
+
+	IsStratInEditMode = false;
+	ShowDialog(szParam0, true);
+}
+if(szParam0[0] == 'N' && szParam1[0] == 'E') //NK_SPD EDIT
+{
+	static ColumnInfo sStatus("NKSP_STATUS"), sStratId("NKSP_STRATID");
+	RowInfoArray selRows;
+	int iSel = MainGetSelectedRows(selRows);
+
+	if(iSel == 2)
+	{
+		if (!strcmp(selRows[0].GetPortfolio(), FixedMWPort()) || !strcmp(selRows[1].GetPortfolio(),FixedMWPort()))
+		{		
+			MsgBox("PARAMETER EDIT", "Please select rows from the strategy portfolio", 'I');
+			return true;
+		}
+		if (strcmp(selRows[0].GetPortfolio(),selRows[1].GetPortfolio()))
+		{
+			MsgBox("PARAMETER EDIT", "Please select two(2) rows from the same strategy", 'I');
+			return true;
+		}
+	}
+	else
+	{
+		MsgBox("PARAMETER EDIT", "Please select two(2) rows from the same strategy to edit parameters", 'I');
+		return 1;
+	}
+	
+	FTStr tempStat("");
+	selRows[0].GetCellValue(sStatus, tempStat);
+	if(!strcmp(tempStat.str(), STRAT_STATUS_WORKING))
+	{
+		MsgBox("PARAMETER EDIT", "The selected Strat is currently running. Please stop it to edit parameters", 'I');
+		return true;
+	}
+	else if(!strcmp(tempStat.str(), STRAT_STATUS_CXLD))
+	{
+		MsgBox("PARAMETER EDIT", "The selected Strat is already cancelled. Please create new strat instead", 'I');
+		return true;
+	}
+	else if(!strcmp(tempStat.str(), STRAT_STATUS_STOP))
+	{
+		MsgBox("PARAMETER EDIT", "The selected Strat is already stopped. Please create new strat instead", 'I');
+		return true;
+	}
+	else if(!strcmp(tempStat.str(), STRAT_STATUS_COMPLETE))
+	{
+		MsgBox("PARAMETER EDIT", "The selected Strat is already completed. Please create new strat instead", 'I');
+		return true;
+	}
+	else if(!strcmp(tempStat.str(), STRAT_STATUS_INIT))
+	{
+		Pop_Msg("PARAMETER EDIT : From Init Mode.");
+		IsEditFromInit = true;
+	}
+	else if(!strcmp(tempStat.str(), START_STATUS_PAUSE) || !strcmp(tempStat.str(), STRAT_STATUS_EDITED))
+	{
+		Pop_Msg("PARAMETER EDIT : From Edited/Paused Mode.");
+		IsEditFromInit = false;
+	}
+	else
+	{
+		MsgBox("PARAMETER EDIT", "WRONG status. Cannot edit parameters", 'I');
+		return true;
+	}
+	
+	IsStratInEditMode = true;
+	ShowDialog(szParam0, true);
+}
+
+
+_END_FORM_ *****************************************

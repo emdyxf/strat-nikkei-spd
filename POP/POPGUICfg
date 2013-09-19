@@ -1,0 +1,112 @@
+l2Act0:Act:r SS_LAYOUT_DEF SINGLE
+l2Act1:Act:r SS_LAYOUT_DEF MIDDLE
+l2Act2:Act:r SS_LAYOUT_DEF RIGHT
+l2Act3:Act:r SS_LAYOUT_DEF SHIFT_LEFT
+l2Act6:Act:r SS_LAYOUT_DEF CTRL_LEFT
+PagoFont:DPI:0
+PagoFont:NOANTIALIAS:0
+l2Act9:Act:r SS_LAYOUT_DEF DOUBLE
+HBAR_E_.PAIR_TRADE:Tools2:pos=1;bgcol=15591907;show=Y;
+HBAR_E_.PAIR_TRADE:Tools:pos=0;bgcol=15591907;show=Y;
+HBAR_ALERT:Tools:pos=0;bgcol=15527148;show=Y;
+MTRXTREEGRP:itm2:PORTFOLIO.WAVENAME.SYM
+MTRXTREEGRP:itm1:PORTFOLIO
+MTRXTREEGRP:itm0:PORTFOLIO.WAVENAME
+MtrxHdrFnt:MAIN:Sans 8
+MtrxHdrFnt:SDET:Arial  9
+HBAR_MAIN:FixBtns:pos=1;bgcol=14473941;show=Y;
+HBAR_MAIN:Tools2:pos=3;bgcol=2697513;show=N;
+HBAR_MAIN:Tools:pos=2;bgcol=2697513;show=Y;
+HBAR_MAIN:Summary:pos=7;bgcol=2697513;show=N;
+HBAR_MAIN:ButtonPanel3:pos=5;bgcol=2697513;show=N;
+HBAR_MAIN:ButtonPanel1:pos=6;bgcol=2697513;show=N;
+HBAR_MAIN:TopButton:pos=1;bgcol=2697513;show=N;
+HBAR_MAIN:MenuBar:pos=0;bgcol=2697513;show=Y;
+ZACCT:ShowFlag:Rows_Summ
+MAIN:LastGrp:PORTFOLIO.WAVENAME.SYM
+MAIN:ShowFlag:Rows_Summ
+GrpMgr:ReComputeSecond:3
+ORDERCHAIN:COLUMN:Id,Type,Port,Symbol,Side,Dest,Price,Qty,Exec,Leaves,Status,Time,Tx-Time,Text,Running-Avg
+GrpMgr:SYNC:1
+GrpMgr:RowHint:1
+GrpMgr:AddBunch:1
+GrpMgr:SingleClickAction:3
+GrpMgr:Border:2
+GrpMgr:ShowFilteredRows:0
+ORDERCHAIN:SORTCOLUMN:2
+ORDERCHAIN:SORTORDER:1
+MAIN:MatrixTreeCol-2:5 22 EXEC_SPD_GRP
+MAIN:MatrixTreeCol1:5 9 EXEC_SHARES
+MAIN:MatrixTreeCol2:END
+SingleStockSym:Script-Old:r SS_OPEN
+SingleStockSym:Script:r SS_OPEN
+HBAR_SDET:MenuBar:pos=0;bgcol=15527148;show=Y;
+HBAR_SDET:TopButton:pos=1;bgcol=15527148;show=Y;
+HBAR_SDET:ButtonPanel1:pos=3;bgcol=14473941;show=N;
+HBAR_SDET:Tools:pos=1;bgcol=14473941;show=N;
+HBAR_SDET:Tools2:pos=2;bgcol=14473941;show=N;
+SDET:ShowFlag:Rows_Summ
+SDET:LastGrp:----
+SDET:MatrixTreeCol4:END
+SDET:MatrixTreeCol3:5 22 LEAVES
+SDET:MatrixTreeCol0:5 22 ORDERED_SHARES
+SDET:MatrixTreeCol2:5 22 EXEC_SHARES
+SDET:MatrixTreeCol-2:5 22 PCT_DONE
+SDET:MatrixTree:1
+SummaryPanel:Toggle:0
+Dlg:_NK_SPDY:407
+Dlg:_NK_SPDX:345
+Dlg:_DLG_BUILD_ARBY:387
+Dlg:_DLG_BUILD_ARBX:1681
+Dlg:_DLG_EDIT_ARBY:302
+Dlg:_DLG_EDIT_ARBX:435
+Dlg:_COMM_ARBY:263
+Dlg:_COMM_ARBX:620
+Dlg:_CLOSE_POSITIONS_DLGY:233
+Dlg:_CLOSE_POSITIONS_DLGX:285
+Dlg:_ADV_SETSY:259
+Dlg:_ADV_SETSX:195
+Dlg:_TESTDLGY:290
+Dlg:_TESTDLGX:1221
+Dlg:_CME_MCXY:186
+Dlg:_CME_MCXX:456
+Dlg:A_CME_MCXY:122
+Dlg:A_CME_MCXX:1573
+Dlg:_CF_MODIFYY:119
+Dlg:_CF_MODIFYX:273
+Dlg:_DLG_CNC_MODIFYX:436
+Dlg:_DLG_CNC_MODIFYY:92
+Dlg:_TRADEFILEX:226
+Dlg:_TRADEFILEY:255
+Dlg:_CASH_FUTUREX:471
+Dlg:_CASH_FUTUREY:208
+Dlg:_CONFIGX:1902
+Dlg:_CONFIGY:288
+Dlg:_LINK_PAIRSX:437
+Dlg:_LINK_PAIRSY:315
+E_.PAIR_TRADE.RELIANCE:ShowFlag:Rows
+SignOn:StreetLoginMode:0
+Skin:Enabled:1
+Skin:Default:darknight
+CustomFont:Name:Tahoma  9
+MTRXTREEGRPSDET:itm0:MEMO
+MTRXTREEGRPSDET:itm1:ORD_SIDE.INSTRUMENT.SYM
+MTRXTREEGRPSDET:itm2:ORD_SIDE
+MTRXTREEGRPSDET:itm3:PRODUCT.INSTRUMENT.SYM
+MTRXTREEGRPSDET:itm4:INSTRUMENT
+MTRXTREEGRPSDET:itm5:PORTFOLIO
+Alerts:SortInfo:3,0
+Alerts:ColumnOrder:3,1,35;4,1,75;5,1,669;6,1,66;7,1,147;8,1,137;9,1,138;1,0,0;2,0,0;
+Matrix:Tree:1
+SingleStock:Enable:1
+TickFilter:LastPriceChange:0.000000
+TickFilter:Filter:-1
+TickFilter:SeparateThread:1
+TickFilter:TrdSize:0
+TickFilter:FilterFlag:0
+TickFilter:TicksToTrigger:0
+TickFilter:FilterDuration:0
+l2Act12:Act:r SS_LAYOUT_DEF RELEASE
+L2:ShowTtlSizeBar:0
+L2:AddDescrn2Px:1
+L2:CROSS:0

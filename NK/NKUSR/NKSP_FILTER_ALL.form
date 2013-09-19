@@ -1,0 +1,26 @@
+_STRT_NEW_FORM_ 1 NKSP_FILTER_ALL 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:NKSP_FILTER_ALL
+/***************************************************
+Strat Rule.
+**************************************************/
+
+char szStratID[32] = "", szWaveName[32] = "";
+Get_param_str(szStratID, 0);
+Get_param_str(szWaveName, 1);
+
+FT_ORDER_INFO oinfo;
+int n = Get_All_Orders(oinfo);
+
+for(int i = 0; i < n; i++)
+{
+	Set_param_str(szStratID,0);
+	Set_param_str(szWaveName,1);
+	
+	RunRuleOnOrder(oinfo, i, NKSP_FILTER_STREET);
+
+}
+RefreshOinfo();
+
+return true;
+
+
+_END_FORM_ *****************************************

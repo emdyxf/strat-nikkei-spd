@@ -1,0 +1,36 @@
+_STRT_NEW_FORM_ 1 PORT_REMOVE 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:PORT_REMOVE
+/***********************
+
+Port Remove
+
+***********************/
+const char szRule[200] = "Port_Remove";
+FTStr sMsg;
+
+FILE *file; 
+
+FTStr sPath(getenv("FLEXAPP"));
+sPath += "/logs/trdlog/";
+char szStr[12]="";
+Current_Date8(szStr);
+sPath += szStr;
+sPath += "/port_remove.txt";
+
+int nRowCount = 0;
+RowInfoArray aRows;
+nRowCount = MainGetSelectedRows(aRows);
+for (int i = 0; i < nRowCount; i++){
+	RowInfo &RowThis = aRows[i];
+	sMsg = "Deleting symbol"; sMsg += RowThis.GetSymbol();
+	Pop_Msg(sMsg);
+	Del_Symbol(RowThis.GetPortfolio(), RowThis.GetSymbol());
+
+	file = fopen(sPath,"a+"); 
+	fprintf(file,"%s\n",RowThis.GetPortfolio()); 
+	fclose(file);
+}
+
+return 0;
+
+
+_END_FORM_ *****************************************

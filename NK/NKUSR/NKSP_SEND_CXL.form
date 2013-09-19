@@ -1,0 +1,33 @@
+_STRT_NEW_FORM_ 1 NKSP_SEND_CXL 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:NKSP_SEND_CXL
+/***************************************************
+NKSP Strat Rule. Get all active orders and cancel them
+**************************************************/
+
+FT_ORDER_INFO oinfo;
+
+int nStratId = (int) Value_Cell_Else("NKSP_STRATID", 0);
+
+int iBOrders = Get_Buy_Active_Orders(oinfo);
+
+for(int i = 0; i < iBOrders; i++)
+{
+        if(nStratId == oinfo.ClientId(i))
+        {
+                Auto_Cancel_Order(i, oinfo, NO_CONFIRM);
+        }
+}
+
+int iSOrders = Get_Sell_Active_Orders(oinfo);
+
+for(int i = 0; i < iSOrders; i++)
+{
+        if(nStratId == oinfo.ClientId(i))
+        {
+                Auto_Cancel_Order(i, oinfo, NO_CONFIRM);
+        }
+}
+
+return true;
+
+
+_END_FORM_ *****************************************

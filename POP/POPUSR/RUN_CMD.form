@@ -1,0 +1,9 @@
+_STRT_NEW_FORM_ 1 RUN_CMD 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:RUN_CMD
+char buf[512] = "";
+TLB_Get_Property("CMD", "value", buf);
+Run_Cmd(buf);
+TLB_Set_Property("CMD", "value","");
+return true;
+
+
+_END_FORM_ *****************************************

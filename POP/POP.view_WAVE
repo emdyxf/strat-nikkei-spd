@@ -1,0 +1,11 @@
+SA.SYMBOL GA.SYMBOL G. CMedium
+ORDER_VALUE:11:int_com:gblank:No:honeydew2:navyblue:rank_n:const_n:exp_n:DESCR
+EXEC_VALUE:11:int_com:gblank:No:honeydew2:navyblue:rank_n:const_n:exp_n:DESCR
+LEAVES_VALUE:11:int_com:gblank:No:honeydew2:navyblue:rank_n:const_n:exp_n:DESCR
+REAL_PNL:11:int_com:gblank:No:honeydew2:navyblue:rank_n:const_n:exp_n:DESCR
+UNR_PNL:11:int_com:gblank:No:honeydew2:navyblue:rank_n:const_n:exp_n:DESCR
+EXEC_SHARES:11:int_com:gblank:No:honeydew2:navyblue:rank_n:const_n:exp_n:DESCR
+LEAVES_SHARES:11:int_com:gblank:No:honeydew2:navyblue:rank_n:const_n:exp_n:DESCR
+PCTDONE_SHARES:9:pctdone:gblank:No:honeydew2:navyblue:rank_n:const_n:exp_n:DESCR
+PORTFOLIO:11:str:gblank:No:honeydew2:navyblue:rank_n:const_y:exp_n:DESCR
+ROWS:11:int_com:gblank:No:honeydew2:navyblue:rank_n:const_n:exp_n:DESCR

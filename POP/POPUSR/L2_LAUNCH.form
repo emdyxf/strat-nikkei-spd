@@ -1,0 +1,33 @@
+_STRT_NEW_FORM_ 1 L2_LAUNCH 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:L2_LAUNCH
+/******************************************************************
+Choose the layout based on the symbol type. Spread Symbols have a different SS or L2 Layout
+******************************************************************/
+
+bool bSetLadderParams = true;
+FlexAppRules::RowInfoArray rowInfoArr;
+int nSelected = MainGetSelectedRows(rowInfoArr);
+
+if (nSelected > 36)
+{
+        FTStr msgSel=""; msgSel+=nSelected; msgSel+=" rows selected! Max Limit is 36!";
+        Pop_Msg1(msgSel);
+        return false;
+}
+
+char szCmdStr[1024]= "dashboard rows-1 cols-";
+sprintf(szCmdStr,"%s%d ",szCmdStr,nSelected);
+
+for (int i = 0; i < nSelected; i++)
+{
+//        sprintf(szCmdStr,"%s l2-%s ",szCmdStr,"ORT");
+		sprintf(szCmdStr,"%s l2-%s ",szCmdStr,"DnG");
+        bSetLadderParams = true;
+}
+
+Pop_Msg(szCmdStr);
+Run_Cmd(szCmdStr);
+
+return true;
+
+
+_END_FORM_ *****************************************

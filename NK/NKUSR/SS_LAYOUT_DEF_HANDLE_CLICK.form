@@ -1,0 +1,460 @@
+_STRT_NEW_FORM_ 1 SS_LAYOUT_DEF_HANDLE_CLICK 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:SS_LAYOUT_DEF_HANDLE_CLICK
+/******************************************************************
+SS Rule. Handle Mouse Clicks
+******************************************************************/
+
+static double dOriginalPrice = 0.00001;
+static string sym = "", port = "";
+char szParam[32] = "", szParam1[32] = "";
+
+//Pop_Msg1("SS_LAYOUT_DEF_HANDLE_CLICK!");
+
+Get_param_str(szParam,0);
+Get_param_str(szParam1,1);
+Set_param_str("",0);
+Set_param_str("",1);
+
+if(!strcmp(szParam,"UNSELECT"))
+{
+	SS_Run_Script("LEVEL2","unselect");
+}
+else if(!strcmp(szParam,"MULT_SELECT"))
+{
+	SS_Run_Script("LEVEL2","select");
+}
+// This will be click based (as desired by the trader). 
+// However, ONLY ONE level must to be selected prior to order for obtaining price.
+else if(!strcmp(szParam,"SEND_ORD"))
+{
+	SS_Run_Script("LEVEL2","startselect");
+	FT_DEPTH_INFO dInfo;
+	int iSel = SS_Get_Selected_Levels(dInfo);
+	if(iSel != 1)
+	{
+		Pop_Msg_Color("Please select only one row for new order firing", 0, "yellow", "black");
+		SS_Run_Script("LEVEL2","unselect");
+		return 1;
+	}
+	
+	char szOrdQty[32] = "";
+	SS_TLB_Get_Property("ss_spbtn_ordQty", "value",szOrdQty);
+	int  iOrdQty = atoi(szOrdQty);
+	if(iOrdQty <= 0)
+	{
+		Pop_Msg_Color("Please set a non-zero order quantity", 0, "yellow", "black");
+		SS_Run_Script("LEVEL2","unselect");
+		return 1;
+	}	
+		
+	double dOrderPrice = 0.00001;
+	int iBidSize = dInfo.BidSize(0), iAskSize = dInfo.AskSize(0);
+	double dBidPrice = dInfo.Bid(0), dAskPrice = dInfo.Ask(0);
+
+	bool bIsBuy = !strcmp(szParam1,"BUY");
+	
+	// On ASK Side
+	if(iBidSize == 0) 		{	dOrderPrice = dAskPrice;	}
+	// On BID Side
+	else if(iAskSize == 0) 	{	dOrderPrice = dBidPrice;	}
+	// Invalid 
+	else					
+	{	
+		Pop_Msg_Color("Invalid Level size", 0, "yellow", "black");
+		SS_Run_Script("LEVEL2","unselect");
+		return 1;					
+	}
+	
+	if(dOrderPrice < 0.0001)
+	{	
+		Pop_Msg_Color("Invalid Level Price", 0, "yellow", "black");
+		SS_Run_Script("LEVEL2","unselect");
+		return 1;					
+	}
+	
+	char szDest[32] = "";
+	FTStr dest(""); Get_Default_Listed_Dest(dest);
+	strncpy(szDest,dest.str(),sizeof(szDest));
+	Pop_Msg_Color("Outright order sent to Default Destination:" , 0 , "yellow","red");
+	Pop_Msg1(szDest);	
+	
+	char szOrdType[32] = "";
+	SS_TLB_Get_Property("ss_lbl_ordType", "label",szOrdType);
+	
+	//
+	// All properties have been obtained : Now set order properties
+	//
+	
+	Set_Order_Price(dOrderPrice);
+	if(!strcmp(szOrdType,"MKT"))		{	Set_Order_Price_MktDay();	}
+	else if(!strcmp(szOrdType,"LIM"))	{	/* Do nothing */			}
+	else if(!strcmp(szOrdType,"IOC"))	{	Set_Order_IOC();			}
+	else								
+	{	
+		Pop_Msg_Color("Invalid Order Type selected", 0, "yellow", "black");Pop_Msg_Color(szOrdType, 0, "yellow", "black");
+		SS_Run_Script("LEVEL2","unselect");
+		return 1;
+	}
+	Set_Order_Shares(iOrdQty);
+	bIsBuy?(Set_Order_Side_Buy()):(Set_Order_Side_Sell());
+	Set_Order_Dest(szDest); 
+	Auto_Send_Order(NO_CONFIRM,LADDER_ORD);
+	
+	SS_Run_Script("LEVEL2","unselect");
+}
+
+// This will be click based and will cancel all open orders on a particular level
+else if(!strcmp(szParam,"CXL"))
+{
+	SS_Run_Script("LEVEL2","startselect");
+	FT_ORDER_INFO oinfo;
+	int iSel = SS_Get_Selected_Orders(oinfo);
+	if(iSel == 0)
+	{
+		Pop_Msg_Color("Please select at least one row for order cancellation", 0, "yellow", "black");
+		SS_Run_Script("LEVEL2","unselect");
+		return 1;
+	}
+	for(int i = 0; i < iSel; i++)
+	{
+		if(!oinfo.Is_Unsent(i) && oinfo.IsAcked(i))
+		{
+			Auto_Cancel_Order(i,oinfo,NO_CONFIRM);
+		}
+		else
+		{
+			if(oinfo.Is_Unsent(i))	Pop_Msg_Color("CXL: Is_Unsent",0,"yellow","black");
+			else if(!oinfo.IsAcked(i)) Pop_Msg_Color("CXL: Is_UnAcked",0,"yellow","black");
+		}
+	}	
+	
+	SS_Run_Script("LEVEL2","unselect");
+}
+
+// This is to pick up the replace parameters of the current selected row
+else if(!strcmp(szParam,"RPL_PARAMS"))
+{
+	SS_Run_Script("LEVEL2","startselect");
+	FT_DEPTH_INFO dInfo;
+	int iSel = SS_Get_Selected_Levels(dInfo);
+	if(iSel != 1)
+	{
+		Pop_Msg_Color("Please select only one row for order modification", 0, "yellow", "black");
+		SS_Run_Script("LEVEL2","unselect");
+		return 1;
+	}
+	
+	FT_ORDER_INFO oinfo;
+	int iOrds = SS_Get_Selected_Orders(oinfo);
+	if(iOrds == 0)
+	{
+		Pop_Msg_Color("Please select a row with open orders for replacing", 0, "yellow", "black");
+		SS_Run_Script("LEVEL2","unselect");
+		return 1;
+	}
+		
+	dOriginalPrice = 0.00001;
+	
+	int iBidSize = dInfo.BidSize(0), iAskSize = dInfo.AskSize(0);
+	double dBidPrice = dInfo.Bid(0), dAskPrice = dInfo.Ask(0);
+	if(iBidSize == 0) 		{	dOriginalPrice = dAskPrice;	}
+	else if(iAskSize == 0) 	{	dOriginalPrice = dBidPrice;	}
+	else					
+	{	
+		Pop_Msg_Color("Invalid Level size", 0, "yellow", "black");
+		SS_Run_Script("LEVEL2","unselect");
+		return 1;					
+	}
+	
+	sym = SYM; port = PORTFOLIO;
+	//SS_Run_Script("LEVEL2","unselect");
+}
+
+// This is to actually replace the order
+else if(!strcmp(szParam,"RPL"))
+{
+	SS_Run_Script("LEVEL2","select");
+	
+	if(dOriginalPrice < 0.0001)
+	{
+		Pop_Msg_Color("Original order at invalid price", 0, "yellow", "black");
+		dOriginalPrice = 0.00001;
+		SS_Run_Script("LEVEL2","unselect");
+		return 1;
+	}
+	FT_DEPTH_INFO dInfo;
+	int iSel = SS_Get_Selected_Levels(dInfo);
+	if(iSel != 2)
+	{
+		Pop_Msg_Color("Please select the second row to get new price", 0, "yellow", "black");
+		dOriginalPrice = 0.00001;
+		SS_Run_Script("LEVEL2","unselect");
+		return 1;
+	}
+	if(strcmp(SYM,sym.c_str())|| strcmp(PORTFOLIO,port.c_str()))
+	{
+		Pop_Msg_Color("Please select the second row in same window to replace", 0, "yellow", "black");
+		dOriginalPrice = 0.00001;
+		SS_Run_Script("LEVEL2","unselect");
+		return 1;
+	}
+		
+	double dPrice1 = 0.00001, dPrice2 = 0.00001 , dRplPrice = 0.00001;
+	int iBidSize1 = dInfo.BidSize(0), iAskSize1 = dInfo.AskSize(0), iBidSize2 = dInfo.BidSize(1), iAskSize2 = dInfo.AskSize(1);
+	double dBidPrice1 = dInfo.Bid(0), dAskPrice1 = dInfo.Ask(0), dBidPrice2 = dInfo.Bid(1), dAskPrice2 = dInfo.Ask(1);
+	
+	if(iBidSize1 == 0) 		{	dPrice1 = dAskPrice1;	}
+	else if(iAskSize1 == 0) {	dPrice1 = dBidPrice1;	}
+	else					
+	{	
+		Pop_Msg_Color("Invalid Level size", 0, "yellow", "black");
+		dOriginalPrice = 0.00001;
+		SS_Run_Script("LEVEL2","unselect");
+		return 1;					
+	}
+	if(iBidSize2 == 0) 		{	dPrice2 = dAskPrice2;	}
+	else if(iAskSize2 == 0) 	{	dPrice2 = dBidPrice2;	}
+	else					
+	{	
+		Pop_Msg_Color("Invalid Level size", 0, "yellow", "black");
+		dOriginalPrice = 0.00001;
+		SS_Run_Script("LEVEL2","unselect");
+		return 1;					
+	}
+	
+	if(dPrice1 - dOriginalPrice < 0.0001)
+		dRplPrice = dPrice2;
+	else
+		dRplPrice = dPrice1;
+		
+	FT_ORDER_INFO oinfo;
+	int iOrds = SS_Get_Selected_Orders(oinfo);
+	
+	char szRplType[32] = "";
+	SS_TLB_Get_Property("ss_lbl_ordType", "label",szRplType);
+	
+	int iRplType = -1;
+	if(!strcmp(szRplType,"MKT"))		{iRplType = 0;}
+	else if(!strcmp(szRplType,"LIM"))	{iRplType = 1;}
+	else if(!strcmp(szRplType,"IOC"))	{iRplType = 2;}
+	else								{dOriginalPrice = 0.00001;return 1;}
+	
+	for(int i = 0; i < iOrds; i++)
+	{
+		if(!oinfo.Is_Mkt_Day(i) && !oinfo.Is_Unsent(i) && oinfo.IsAcked(i) && dOriginalPrice > 0.0001 && oinfo.Limit(i) - dOriginalPrice < 0.0001)
+		{
+			Set_Order_Price(dRplPrice);
+			switch(iRplType)
+			{
+				case 0:	Set_Order_Price_MktDay(); break;
+				case 1: break;
+				case 2: Set_Order_IOC();break;
+				default: continue;
+			}
+			Auto_Replace_Order(i,oinfo,NO_CONFIRM,oinfo.ClientId(i));
+		}
+		else
+		{
+			if(oinfo.Is_Mkt_Day(i)) Pop_Msg_Color("RPL: Is_MktDay",0,"yellow","black");
+			else if(oinfo.Is_Unsent(i))	Pop_Msg_Color("RPL: Is_Unsent",0,"yellow","black");
+			else if(!oinfo.IsAcked(i)) Pop_Msg_Color("RPL: Is_UnAcked",0,"yellow","black");
+			else if(dRplPrice < 0.0001) Pop_Msg_Color("RPL: Invalid_RplPx",0,"yellow","black");
+			else Pop_Msg_Color("RPL: Same_RplPx",0,"yellow","black");
+		}
+	}
+	dOriginalPrice = 0.00001;
+	
+	SS_Run_Script("LEVEL2","unselect");
+}
+
+// Increment or decrement total quantity standing at a certain level
+else if(!strcmp(szParam,"QTY_BUY"))
+{
+	SS_Run_Script("LEVEL2","startselect");
+	char szQty[32] = "";
+	SS_TLB_Get_Property("ss_spbtn_rplQty", "value",szQty);
+	int  iQty = atoi(szQty);
+	if(iQty <= 0)
+	{
+		Pop_Msg_Color("Please set a non-zero order quantity", 0, "yellow", "black");
+		SS_Run_Script("LEVEL2","unselect");
+		return 1;
+	}
+	
+	bool bIsInc = (!strcmp(szParam1,"INCREASE"));
+	
+	FT_DEPTH_INFO dInfo;
+	int iSel = SS_Get_Selected_Levels(dInfo);
+	if(iSel != 1)
+	{
+		Pop_Msg_Color("Please select a valid level", 0, "yellow", "black");
+		SS_Run_Script("LEVEL2","unselect");
+		return 1;
+	}
+			
+	FT_ORDER_INFO oinfo;
+	int iOrds = SS_Get_Selected_Orders(oinfo);
+	if(iOrds == 0)
+	{
+		Pop_Msg_Color("Please select valid orders", 0, "yellow", "black");
+		SS_Run_Script("LEVEL2","unselect");
+		return 1;
+	}
+	
+	int iTotalOpenQty = 0;
+	int iLastOpenOrder = 0;
+	int iLastSavedTime = -1;
+	for(int i = 0; i < iOrds; i++)
+	{
+		if(!oinfo.Is_Mkt_Day(i) && !oinfo.Is_Unsent(i) && oinfo.IsAcked(i) && oinfo.OrdSide(i)==66)
+		{	
+			iTotalOpenQty += oinfo.Leaves(i);
+			if(oinfo.Prim_OrderTime(i) > iLastSavedTime)
+			{
+				iLastSavedTime = oinfo.Prim_OrderTime(i);
+				iLastOpenOrder = i;
+			}
+		}	
+	}
+	
+	if(iTotalOpenQty > 0 )
+	{
+		if(bIsInc)
+		{
+			Set_Order_Price(oinfo.Limit(iLastOpenOrder));
+			Set_Order_Rpl_Shares(oinfo.OrdSize(iLastOpenOrder) + iQty);
+			Auto_Replace_Order_Size(iLastOpenOrder,oinfo,NO_CONFIRM,oinfo.ClientId(iLastOpenOrder),1);
+		}
+		else
+		{
+			for(int i = iOrds - 1; i >= 0; i--) // Hopefully the last order will be the latest; other wise need a sort algo etc.
+			{
+				if(!oinfo.Is_Mkt_Day(i) && !oinfo.Is_Unsent(i) && oinfo.IsAcked(i) && oinfo.OrdSide(i)==66)
+				{			
+					int iLeaves = oinfo.Leaves(i);
+					if(iLeaves > 0 && iQty > 0)
+					{
+						int iRplQty = iLeaves - iQty;
+						if(iRplQty <= 0)
+						{
+							Auto_Cancel_Order(i,oinfo,NO_CONFIRM);
+						}
+						else
+						{
+							Set_Order_Price(oinfo.Limit(i));
+							Set_Order_Rpl_Shares(oinfo.OrdSize(i) - iQty);
+							Auto_Replace_Order_Size(i,oinfo,NO_CONFIRM,oinfo.ClientId(i),1);
+						}
+						iTotalOpenQty -= iLeaves;
+						iQty -= iLeaves;
+					}
+				}
+				else
+				{
+					if(oinfo.Is_Mkt_Day(i)) Pop_Msg_Color("QTY: Is_MktDay",0,"yellow","black");
+					else if(oinfo.Is_Unsent(i))	Pop_Msg_Color("QTY: Is_Unsent",0,"yellow","black");
+					else Pop_Msg_Color("QTY: Is_UnAcked",0,"yellow","black");
+				}
+			}
+		}
+	}
+	
+	SS_Run_Script("LEVEL2","unselect");
+}
+
+else if(!strcmp(szParam,"QTY_SELL"))
+{
+	SS_Run_Script("LEVEL2","startselect");
+	char szQty[32] = "";
+	SS_TLB_Get_Property("ss_spbtn_rplQty", "value",szQty);
+	int  iQty = atoi(szQty);
+	if(iQty <= 0)
+	{
+		Pop_Msg_Color("Please set a non-zero order quantity", 0, "yellow", "black");
+		SS_Run_Script("LEVEL2","unselect");
+		return 1;
+	}
+
+	bool bIsInc = (!strcmp(szParam1,"INCREASE"));
+	
+	FT_DEPTH_INFO dInfo;
+	int iSel = SS_Get_Selected_Levels(dInfo);
+	if(iSel != 1)
+	{
+		Pop_Msg_Color("Please select a valid level", 0, "yellow", "black");
+		SS_Run_Script("LEVEL2","unselect");
+		return 1;
+	}
+			
+	FT_ORDER_INFO oinfo;
+	int iOrds = SS_Get_Selected_Orders(oinfo);
+	if(iOrds == 0)
+	{
+		Pop_Msg_Color("Please select valid orders", 0, "yellow", "black");
+		SS_Run_Script("LEVEL2","unselect");
+		return 1;
+	}
+	
+	int iTotalOpenQty = 0;
+	int iLastOpenOrder = 0;
+	int iLastSavedTime = -1;
+	for(int i = 0; i < iOrds; i++)
+	{
+		if(!oinfo.Is_Mkt_Day(i) && !oinfo.Is_Unsent(i) && oinfo.IsAcked(i) && oinfo.OrdSide(i)!=66)
+		{	
+			iTotalOpenQty += oinfo.Leaves(i);
+			if(oinfo.Prim_OrderTime(i) > iLastSavedTime)
+			{
+				iLastSavedTime = oinfo.Prim_OrderTime(i);
+				iLastOpenOrder = i;
+			}
+		}	
+	}
+	
+	if(iTotalOpenQty > 0 )
+	{
+		if(bIsInc)
+		{
+			Set_Order_Price(oinfo.Limit(iLastOpenOrder));
+			Set_Order_Rpl_Shares(oinfo.OrdSize(iLastOpenOrder) + iQty);
+			Auto_Replace_Order_Size(iLastOpenOrder,oinfo,NO_CONFIRM,oinfo.ClientId(iLastOpenOrder),1);
+		}
+		else
+		{
+			for(int i = iOrds - 1; i >= 0; i--) // Hopefully the last order will be the latest; other wise need a sort algo etc.
+			{
+				if(!oinfo.Is_Mkt_Day(i) && !oinfo.Is_Unsent(i) && oinfo.IsAcked(i) && oinfo.OrdSide(i)!=66)
+				{			
+					int iLeaves = oinfo.Leaves(i);
+					if(iLeaves > 0 && iQty > 0)
+					{
+						int iRplQty = iLeaves - iQty;
+						if(iRplQty <= 0)
+						{
+							Auto_Cancel_Order(i,oinfo,NO_CONFIRM);
+						}
+						else
+						{
+							Set_Order_Price(oinfo.Limit(i));
+							Set_Order_Rpl_Shares(oinfo.OrdSize(i) - iQty);
+							Auto_Replace_Order_Size(i,oinfo,NO_CONFIRM,oinfo.ClientId(i),1);
+						}
+						iTotalOpenQty -= iLeaves;
+						iQty -= iLeaves;
+					}
+				}
+				else
+				{
+					if(oinfo.Is_Mkt_Day(i)) Pop_Msg_Color("QTY: Is_MktDay",0,"yellow","black");
+					else if(oinfo.Is_Unsent(i))	Pop_Msg_Color("QTY: Is_Unsent",0,"yellow","black");
+					else Pop_Msg_Color("QTY: Is_UnAcked",0,"yellow","black");
+				}
+			}
+		}
+	}
+	
+	SS_Run_Script("LEVEL2","unselect");
+}
+return 1;
+
+
+_END_FORM_ *****************************************

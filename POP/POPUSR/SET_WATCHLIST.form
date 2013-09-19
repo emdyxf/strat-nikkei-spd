@@ -1,0 +1,19 @@
+_STRT_NEW_FORM_ 1 SET_WATCHLIST 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:SET_WATCHLIST
+Set_Column_Str_Save("STRAT_NAME", PORTFOLIO);
+
+FTStr sTrdAcct;
+sTrdAcct = GlobalStr("TRD_ACCT");
+Set_Column_Str_Save("ACCOUNT", sTrdAcct.str());
+
+FTStr sWave;
+sWave = sTrdAcct; sWave+="-";
+if (strstr(SYM, SYM_NAME_NKD))		{	sWave += SYM_NAME_NKD;	}
+else if (strstr(SYM, SYM_NAME_NIY))	{	sWave += SYM_NAME_NIY;	}
+else if (strstr(SYM, SYM_NAME_6J))	{	sWave += SYM_NAME_6J;	}
+
+Set_Column_Str_Save("WAVENAME", sWave.str());
+
+return 1;
+
+
+_END_FORM_ *****************************************

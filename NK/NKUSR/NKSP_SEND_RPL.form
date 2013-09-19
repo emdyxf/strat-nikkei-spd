@@ -1,0 +1,90 @@
+_STRT_NEW_FORM_ 1 NKSP_SEND_RPL 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:NKSP_SEND_RPL
+/***************************************************
+NKSP Strat Rule. Get all active orders and replace with correct running flag
+**************************************************/
+
+FT_ORDER_INFO oinfo;
+
+FTStr szInstruction;
+Get_param_str(szInstruction.str(),0);
+Set_param_str("",0);
+
+Pop_Msg1("NKSP_SEND_RPL!");
+
+FTStr msgTmp; 
+
+if(BUY_LEAVES==0 && SELL_LEAVES==0)
+{
+	msgTmp="[";msgTmp+=PORTFOLIO;msgTmp+="][";msgTmp+=SYM;msgTmp+="]:";
+	if(BUY_LEAVES)
+	{
+		msgTmp+="BUY_LEAVES=0!";
+	}
+	else
+	{
+		msgTmp+="SELL_LEAVES=0!";
+	}
+	Pop_Msg1(msgTmp);
+	return false;
+}
+
+int nTotalOrdQty = (int)Value_Cell_Else("NKSP_TOTALQTY", 0);
+
+int nStratId = (int) Value_Cell_Else("NKSP_STRATID", 0);
+
+if (!strcmp(szInstruction.str(), "STOP"))
+{
+	Set_Column_Value_Save("NKSP_RUNNING", 0);
+}
+else if (!strcmp(szInstruction.str(), "RESTART"))
+{
+	Set_Column_Value_Save("NKSP_RUNNING", 1);
+}
+else
+{
+	Pop_Msg_Color("Invalid Instructions. Cannot modify client orders!",0,"red","black");
+	return false;
+}
+
+double dBenchmark = Value_Cell_Else("NKSP_BENCH", 0.0);
+
+// Replace buy orders, with Price as BidSpread
+int iBOrders = Get_Buy_Active_Orders(oinfo);
+
+msgTmp="Buy order count = "; msgTmp+=iBOrders;
+Pop_Msg(msgTmp);
+
+for(int i = 0; i < iBOrders; i++)
+{
+	if(nStratId == oinfo.ClientId(i))
+	{
+		if(dBenchmark < g_dEpsilon)	{	Set_Order_Price(-dBenchmark);	}
+		else						{	Set_Order_Price(dBenchmark);	}
+		Set_Order_Dest(ALGO_DEST);
+		Set_Order_Rpl_Shares(nTotalOrdQty);
+		Auto_Replace_Order_Size(i,oinfo,NO_CONFIRM,nStratId,1);
+	}
+}
+
+// Replace sell orders, with Price as OfferSpread
+int iSOrders = Get_Sell_Active_Orders(oinfo);
+
+msgTmp="Sell orders count = "; msgTmp+=iSOrders;
+Pop_Msg(msgTmp);
+
+for(int i = 0; i < iSOrders; i++)
+{
+	if(nStratId == oinfo.ClientId(i))
+	{
+		if(dBenchmark < g_dEpsilon)	{	Set_Order_Price(-dBenchmark);	}
+		else						{	Set_Order_Price(dBenchmark);	}
+		Set_Order_Dest(ALGO_DEST);
+		Set_Order_Rpl_Shares(nTotalOrdQty);
+		Auto_Replace_Order_Size(i,oinfo,NO_CONFIRM,nStratId,1);
+	}
+}	
+
+return true;
+
+
+_END_FORM_ *****************************************

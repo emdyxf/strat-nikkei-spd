@@ -1,0 +1,45 @@
+PROJ_NSP_v1.1.10.20130917
+- Enhancement: Optimize order price cross check
+
+PROJ_NSP_v1.1.09.20130826
+- Enhancement: Additional logging to facilitate measuring of fire-upon-fill latency 
+
+PROJ_NSP_v1.1.08.20130821
+- Enhancement: Set WaveName as "Account-Symbol" for risk monitoring purpose of multiple users
+
+PROJ_NSP_v1.1.07.20130814
+- Enhancement: Display Strat Name on Ladder
+
+PROJ_NSP_v1.1.06.20130807
+- Enhancement: Set trading account, WaveName for risk monitoring purpose
+
+PROJ_NSP_v1.1.05.20130806
+- Enhancement: Cleared WaveName for future Risk Monitoring purpose 
+
+PROJ_NSP_v1.1.04.20130805
+- Enhancement: Set User Memo to identify strategy orders 
+
+PROJ_NSP_v1.1.03.20130730
+- Enhancement: Temporary disable "Cancel-All" function from ladder
+
+PROJ_NSP_v1.1.02.20130729
+- Feature: Support replace from strategy ladder
+-> flextrdr_gtk dependency: Version Rel-11-1-0, Project ID:  20130726.3.0.4
+-> flextrdr_win dependency: Release package:  ftgtk.Rel-11-1-0.20130729.win.zip
+
+PROJ_NSP_v1.1.01.20130725
+- Feature: Support quoting mode "ALWAYS" vs. "SILENT"
+
+===============
+
+PROJ_NSP_v1.0.03.20130723
+- Enhancement: Disabled auto-adjust price for hedging leg active order
+
+PROJ_NSP_v1.0.02.20130722
+- Enhancement: Set status in app side as "Completed" when all total quantity are filled
+- Enhancement: Support position information at user level
+
+PROJ_NSP_v1.0.01.20130720
+- Feature: Nikkei Spread Basic Features - SRS Feature A & B
+
+===============
